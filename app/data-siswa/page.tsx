@@ -59,17 +59,7 @@ export default function DataSiswaPage() {
       <div className="flex-1 p-6">
         <h1 className="text-xl font-semibold mb-6">Dashboard / Data Siswa</h1>
 
-        {/* Filter */}
-        <div className="flex items-center gap-4 mb-4">
-          <select className="border rounded-lg px-3 py-2">
-            <option>Pilih Angkatan</option>
-            <option>Angkatan 1</option>
-            <option>Angkatan 2</option>
-          </select>
-          <button className="px-4 py-2 bg-gray-200 rounded-lg">
-            Terapkan Filter
-          </button>
-        </div>
+        
 
         {/* Header + Search */}
         <div className="flex items-center justify-between mb-3">

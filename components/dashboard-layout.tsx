@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { Home, Table, Settings, GraduationCap } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
@@ -15,8 +14,8 @@ const menuItems = [
 ]
 
 export function DashboardLayout() {
-  const [activeMenu, setActiveMenu] = useState("dashboard")
   const router = useRouter()
+  const pathname = usePathname() // 👈 ini penting
 
   const handleLogout = () => {
     localStorage.removeItem("admin_logged_in")
@@ -44,22 +43,24 @@ export function DashboardLayout() {
 
         {/* Navigation Menu */}
         <div className="flex-1 px-6 space-y-3">
-          {menuItems.map((item) => (
-            <Link key={item.id} href={item.url} className="block">
-              <AnimatedButton
-                variant="ghost"
-                className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${
-                  activeMenu === item.id
-                    ? "bg-white text-[#1E3A8A] shadow-lg transform scale-105"
-                    : "text-white hover:bg-blue-700/50"
-                }`}
-                onClick={() => setActiveMenu(item.id)}
-              >
-                <item.icon className="mr-4 h-5 w-5" />
-                {item.name}
-              </AnimatedButton>
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathname === item.url // 👈 cek langsung dari URL
+            return (
+              <Link key={item.id} href={item.url} className="block">
+                <AnimatedButton
+                  variant="ghost"
+                  className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${
+                    isActive
+                      ? "bg-white text-[#1E3A8A] shadow-lg transform scale-105"
+                      : "text-white hover:bg-blue-700/50"
+                  }`}
+                >
+                  <item.icon className="mr-4 h-5 w-5" />
+                  {item.name}
+                </AnimatedButton>
+              </Link>
+            )
+          })}
         </div>
 
         {/* Footer */}
