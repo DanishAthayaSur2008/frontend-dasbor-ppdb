@@ -1,39 +1,27 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { gsap } from "gsap"
-import { Home, Table, CheckCircle, Shield, Settings, GraduationCap } from "lucide-react"
-import { SectionView } from "@/components/section-view"
+import Link from "next/link"
+import { Home, Table, Settings, GraduationCap } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
 
 const menuItems = [
-  { id: "dashboard", name: "Dashboard", icon: Home },
-  { id: "table-data", name: "Table data", icon: Table },
-  { id: "data-verifikasi", name: "Data Siswa", icon: GraduationCap },
-  { id: "settings", name: "Settings and profile", icon: Settings },
+  { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
+  { id: "table-data", name: "Table data", icon: Table, url: "/table-data" },
+  { id: "data-siswa", name: "Data Siswa", icon: GraduationCap, url: "/data-siswa" },
+  { id: "settings", name: "Settings and profile", icon: Settings, url: "/settings" },
 ]
 
 export function DashboardLayout() {
   const [activeMenu, setActiveMenu] = useState("dashboard")
-  const contentRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
   const handleLogout = () => {
     localStorage.removeItem("admin_logged_in")
     localStorage.removeItem("admin_username")
     router.push("/")
-  }
-
-  const handleMenuClick = (menuId: string) => {
-    if (activeMenu === menuId) return
-    setActiveMenu(menuId)
-
-    // animasi transisi content (optional)
-    const tl = gsap.timeline()
-    tl.to(contentRef.current, { opacity: 0, y: 20, duration: 0.2, ease: "power2.in" })
-      .to(contentRef.current, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" })
   }
 
   return (
@@ -57,19 +45,20 @@ export function DashboardLayout() {
         {/* Navigation Menu */}
         <div className="flex-1 px-6 space-y-3">
           {menuItems.map((item) => (
-            <div key={item.id} className={`sidebar-item menu-${item.id}`}>
+            <Link key={item.id} href={item.url} className="block">
               <AnimatedButton
                 variant="ghost"
-                className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${activeMenu === item.id
+                className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${
+                  activeMenu === item.id
                     ? "bg-white text-[#1E3A8A] shadow-lg transform scale-105"
                     : "text-white hover:bg-blue-700/50"
-                  }`}
-                onClick={() => handleMenuClick(item.id)}
+                }`}
+                onClick={() => setActiveMenu(item.id)}
               >
                 <item.icon className="mr-4 h-5 w-5" />
                 {item.name}
               </AnimatedButton>
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -99,8 +88,8 @@ export function DashboardLayout() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <main ref={contentRef} className="flex-1 p-8">
-          <SectionView sectionId={activeMenu} />
+        <main className="flex-1 p-8">
+          {/* Konten halaman ditentukan oleh file page.tsx masing-masing */}
         </main>
       </div>
     </div>
