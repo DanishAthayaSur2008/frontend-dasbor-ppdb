@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { gsap } from "gsap"
-import { Home, Table, CheckCircle, Shield, Settings } from "lucide-react"
+import { Home, Table, CheckCircle, Shield, Settings, GraduationCap } from "lucide-react"
 import { SectionView } from "@/components/section-view"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
@@ -11,8 +11,7 @@ import { SMKLogo } from "@/components/smk-logo"
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home },
   { id: "table-data", name: "Table data", icon: Table },
-  { id: "data-diterima", name: "Data diterima", icon: CheckCircle },
-  { id: "data-verifikasi", name: "Data Verifikasi", icon: Shield },
+  { id: "data-verifikasi", name: "Data Siswa", icon: GraduationCap },
   { id: "settings", name: "Settings and profile", icon: Settings },
 ]
 

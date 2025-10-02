@@ -65,7 +65,7 @@ export function LoginForm() {
 
         // Shake animation for form
         gsap.to(formRef.current, {
-          x: [-10, 10, -10, 10, 0],
+          keyframes: { x: [-10, 10, -10, 10, 0] },
           duration: 0.5,
           ease: "power2.out",
         })
