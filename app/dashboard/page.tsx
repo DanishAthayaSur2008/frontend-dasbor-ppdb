@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { DashboardLayout } from '@/components/dashboard-layout'
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { DashboardLayout } from "@/components/dashboard-layout"
 import {
   LineChart,
   Line,
@@ -11,18 +11,62 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
+} from "recharts"
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const [chartData, setChartData] = useState<any[]>([])
+  const [dataPertahun, setDataPertahun] = useState<any[]>([])
+  const [summary, setSummary] = useState({
+    total: 0,
+    verified: 0,
+    unverified: 0,
+  })
+
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('admin_logged_in')
-    if (isLoggedIn !== 'true') {
-      router.push('/')
+    const isLoggedIn = localStorage.getItem("admin_logged_in")
+    if (isLoggedIn !== "true") {
+      router.push("/")
       return
     }
+
+    // generate dummy chart (12 bulan)
+    const months = [
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+    ]
+    const chart = months.map((m) => ({
+      name: m,
+      jumlah: Math.floor(Math.random() * 100) + 10, // random 10-110
+    }))
+    setChartData(chart)
+
+    // generate dummy per tahun
+    const years = [2025, 2024, 2023, 2022, 2021]
+    const perTahun = years.map((y) => ({
+      tahun: y,
+      jumlah: Math.floor(Math.random() * 100) + 1,
+    }))
+    setDataPertahun(perTahun)
+
+    // summary cards
+    const total = perTahun.reduce((a, b) => a + b.jumlah, 0)
+    const verified = Math.floor(total * 0.3) // misal 30% verified
+    const unverified = total - verified
+    setSummary({ total, verified, unverified })
+
     setIsLoading(false)
   }, [router])
 
@@ -37,29 +81,6 @@ export default function DashboardPage() {
     )
   }
 
-  // Dummy data untuk grafik
-  const chartData = [
-    { name: 'Feb', jumlah: 20 },
-    { name: 'Mar', jumlah: 25 },
-    { name: 'Apr', jumlah: 30 },
-    { name: 'May', jumlah: 40 },
-    { name: 'Jun', jumlah: 50 },
-    { name: 'Jul', jumlah: 55 },
-    { name: 'Aug', jumlah: 60 },
-    { name: 'Sep', jumlah: 65 },
-    { name: 'Oct', jumlah: 70 },
-    { name: 'Nov', jumlah: 75 },
-    { name: 'Dec', jumlah: 80 },
-    { name: 'Jan', jumlah: 90 },
-  ]
-
-  const dataPertahun = [
-    { tahun: 2025, jumlah: 100 },
-    { tahun: 2024, jumlah: 100 },
-    { tahun: 2021, jumlah: 100 },
-    { tahun: 2020, jumlah: 100 },
-  ]
-
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -67,23 +88,20 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="flex-1 p-8 bg-gray-50">
-        {/* Breadcrumb */}
-        <h2 className="text-xl font-bold font-inter mb-6">
-          Dashboard
-        </h2>
+        <h2 className="text-xl font-bold font-inter mb-6">Dashboard</h2>
 
         {/* Cards */}
         <div className="grid grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-blue-600">150 Pendaftar</p>
+            <p className="text-2xl font-bold text-blue-600">{summary.total} Pendaftar</p>
             <p className="text-gray-500">Jumlah Pendaftar</p>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-yellow-600">126 Tidak Terverif</p>
+            <p className="text-2xl font-bold text-yellow-600">{summary.unverified} Tidak Terverif</p>
             <p className="text-gray-500">Jumlah Tidak Terverifikasi</p>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-green-600">24 Terverifikasi</p>
+            <p className="text-2xl font-bold text-green-600">{summary.verified} Terverifikasi</p>
             <p className="text-gray-500">Jumlah Verifikasi</p>
           </div>
         </div>

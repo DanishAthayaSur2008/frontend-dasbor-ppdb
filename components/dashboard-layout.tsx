@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Home, Table, Settings, GraduationCap } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
+import Image from "next/image"
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
@@ -42,7 +43,7 @@ export function DashboardLayout() {
         </div>
 
         {/* Navigation Menu */}
-        <div className="flex-1 px-6 space-y-3">
+        <div className="flex-1 px-6 space-y-5">
           {menuItems.map((item) => {
             const isActive = pathname === item.url // 👈 cek langsung dari URL
             return (
@@ -52,7 +53,7 @@ export function DashboardLayout() {
                   className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${
                     isActive
                       ? "bg-white text-[#1E3A8A] shadow-lg transform scale-105"
-                      : "text-white hover:bg-blue-700/50"
+                      : "text-white hover:bg-white/50"
                   }`}
                 >
                   <item.icon className="mr-4 h-5 w-5" />
@@ -67,10 +68,10 @@ export function DashboardLayout() {
         <div className="p-6 pt-8">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 flex items-center justify-center">
-              <SMKLogo className="w-8 h-8 text-[#1E3A8A]" />
+              <SMKLogo warna="#ffffffff" className="w-8 h-8"  />
             </div>
             <div>
-              <h4 className="text-sm font-bold font-inter text-[#4DA9FF]">SMK TI BAZMA</h4>
+              <h4 className="text-sm font-bold font-inter text-white">SMK TI BAZMA</h4>
               <p className="text-xs text-blue-200 font-poppins">Islamic Boarding School</p>
             </div>
           </div>
