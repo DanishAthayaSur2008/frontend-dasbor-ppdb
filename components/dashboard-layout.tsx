@@ -25,9 +25,9 @@ export function DashboardLayout() {
   }
 
   return (
-    <div className="dashboard-container min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-80 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl">
+    
+  
+      <div className="w-70 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl">
         {/* Admin Profile */}
         <div className="p-8 pb-6">
           <div className="flex items-center space-x-4 mb-8">
@@ -88,12 +88,5 @@ export function DashboardLayout() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-8">
-          {/* Konten halaman ditentukan oleh file page.tsx masing-masing */}
-        </main>
-      </div>
-    </div>
   )
 }
