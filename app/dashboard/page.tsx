@@ -12,6 +12,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts"
+import bgBlue from "@/public/blue-header.png" // background header biru
+import folderBg from "@/public/bg-card-ddashboard.png" // background di dalam card
+import Image from "next/image"
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -32,28 +35,13 @@ export default function DashboardPage() {
       return
     }
 
-    // generate dummy chart (12 bulan)
-    const months = [
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-    ]
+    const months = ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     const chart = months.map((m) => ({
       name: m,
-      jumlah: Math.floor(Math.random() * 100) + 10, // random 10-110
+      jumlah: Math.floor(Math.random() * 100) + 10,
     }))
     setChartData(chart)
 
-    // generate dummy per tahun
     const years = [2025, 2024, 2023, 2022, 2021]
     const perTahun = years.map((y) => ({
       tahun: y,
@@ -61,12 +49,10 @@ export default function DashboardPage() {
     }))
     setDataPertahun(perTahun)
 
-    // summary cards
     const total = perTahun.reduce((a, b) => a + b.jumlah, 0)
-    const verified = Math.floor(total * 0.3) // misal 30% verified
+    const verified = Math.floor(total * 0.3)
     const unverified = total - verified
     setSummary({ total, verified, unverified })
-
     setIsLoading(false)
   }, [router])
 
@@ -82,33 +68,79 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-gray-50">
       <DashboardLayout />
 
-      {/* Main Content */}
-      <div className="flex-1 p-8 bg-gray-50">
-        <h2 className="text-xl font-bold font-inter mb-6">Dashboard</h2>
+      <div className="flex-1 p-6">
+        <h1 className="text-xl font-semibold mb-6">Dashboard</h1>
+        {/* ====== HEADER BLUE SECTION ====== */}
+        <div className="relative h-[157px] rounded-[10px] overflow-visible mb-[100px]">
+          {/* Background image full cover */}
+          <Image
+            src={bgBlue} // ganti dengan gambar header kamu
+            alt="Background Header"
+            fill
+            className="object-cover w-full h-full rounded-[10px]"
+          />
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-[10px]" />
 
-        {/* Cards */}
-        <div className="grid grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-blue-600">{summary.total} Pendaftar</p>
-            <p className="text-gray-500">Jumlah Pendaftar</p>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-yellow-600">{summary.unverified} Tidak Terverif</p>
-            <p className="text-gray-500">Jumlah Tidak Terverifikasi</p>
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow">
-            <p className="text-2xl font-bold text-green-600">{summary.verified} Terverifikasi</p>
-            <p className="text-gray-500">Jumlah Verifikasi</p>
+          {/* ====== CARD SECTION ====== */}
+          <div className="absolute left-[33px] -bottom-[45px] flex gap-3">
+            {/* Card Total */}
+            <div
+              className="relative w-[369px] h-[140px] rounded-[20px] shadow-[0_2px_4px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col justify-center px-6 bg-white"
+              style={{
+                backgroundImage: `url(${folderBg.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <h3 className="text-[#132B6D] text-[24px] font-semibold leading-[29px]">
+                {summary.total} Pendaftar
+              </h3>
+              <p className="text-[16px] text-black/50">Jumlah Pendaftar</p>
+            </div>
+
+            {/* Card Tidak Terverif */}
+            <div
+              className="relative w-[369px] h-[140px] rounded-[20px] shadow-[0_2px_4px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col justify-center px-6 bg-white"
+              style={{
+                backgroundImage: `url(${folderBg.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <h3 className="text-[#132B6D] text-[24px] font-semibold leading-[29px]">
+                {summary.unverified} Tidak Terverif
+              </h3>
+              <p className="text-[16px] text-black/50">Jumlah Tidak Terverifikasi</p>
+            </div>
+
+            {/* Card Terverif */}
+            <div
+              className="relative w-[369px] h-[140px] rounded-[20px] shadow-[0_2px_4px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col justify-center px-6 bg-white"
+              style={{
+                backgroundImage: `url(${folderBg.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <h3 className="text-[#132B6D] text-[24px] font-semibold leading-[29px]">
+                {summary.verified} Terverifikasi
+              </h3>
+              <p className="text-[16px] text-black/50">Jumlah Verifikasi</p>
+            </div>
           </div>
         </div>
+        {/* ====== END OF HEADER BLUE SECTION ====== */}
 
-        {/* Chart + Data */}
+
+        {/* CHART + DATA PER TAHUN */}
         <div className="grid grid-cols-3 gap-6">
-          {/* Chart */}
           <div className="col-span-2 bg-white rounded-2xl p-6 shadow">
             <div className="flex justify-between mb-4">
               <h3 className="font-bold">Jumlah Pendaftar</h3>
@@ -140,7 +172,6 @@ export default function DashboardPage() {
             </ResponsiveContainer>
           </div>
 
-          {/* Data Pertahun */}
           <div className="bg-white rounded-2xl p-6 shadow">
             <h3 className="font-bold mb-4">Data Pertahun</h3>
             <div className="space-y-4">

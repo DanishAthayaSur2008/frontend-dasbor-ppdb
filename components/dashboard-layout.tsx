@@ -6,6 +6,7 @@ import { Home, Table, Settings, GraduationCap } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
 import Image from "next/image"
+import LogoAdmin from "@/public/logo-admin.png" // ganti dengan logo admin kamu
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
@@ -31,8 +32,15 @@ export function DashboardLayout() {
         {/* Admin Profile */}
         <div className="p-8 pb-6">
           <div className="flex items-center space-x-4 mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-xl font-bold font-inter">M</span>
+           <div
+              className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
+              style={{
+                backgroundImage: `url(${LogoAdmin.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
             </div>
             <div>
               <h3 className="text-lg font-semibold font-inter text-white">Admin</h3>
@@ -87,6 +95,5 @@ export function DashboardLayout() {
           </div>
         </div>
       </div>
-
   )
 }
