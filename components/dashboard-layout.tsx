@@ -50,15 +50,15 @@ export function DashboardLayout() {
               <Link key={item.id} href={item.url} className="block">
                 <AnimatedButton
                   variant="ghost"
-                  className={`w-full justify-start text-left font-poppins rounded-2xl py-4 px-6 transition-all duration-300 ${
-                    isActive
-                      ? "bg-white text-[#1E3A8A] shadow-lg transform scale-105"
-                      : "text-white hover:bg-white/50"
-                  }`}
+                  className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${isActive
+                      ? "bg-white text-[#1E3A8A] rounded-full shadow-md"
+                      : "text-white hover:bg-white/10 rounded-full"
+                    }`}
                 >
                   <item.icon className="mr-4 h-5 w-5" />
                   {item.name}
                 </AnimatedButton>
+
               </Link>
             )
           })}
@@ -68,7 +68,7 @@ export function DashboardLayout() {
         <div className="p-6 pt-8">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 flex items-center justify-center">
-              <SMKLogo warna="#ffffffff" className="w-8 h-8"  />
+              <SMKLogo warna="#ffffffff" className="w-8 h-8" />
             </div>
             <div>
               <h4 className="text-sm font-bold font-inter text-white">SMK TI BAZMA</h4>

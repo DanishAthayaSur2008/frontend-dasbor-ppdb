@@ -20,7 +20,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "PPDB SMK TI Bazma 2026 - Admin Dashboard",
+  title: "Admin Dashboard - PPDB SMK TI Bazma 2026",
   description: "Dashboard Admin untuk Penerimaan Peserta Didik Baru SMK TI Bazma 2026",
   generator: "v0.app",
 }
