@@ -12,7 +12,7 @@ const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
   { id: "table-data", name: "Table data", icon: Table, url: "/table-data" },
   { id: "data-siswa", name: "Data Siswa", icon: GraduationCap, url: "/data-siswa" },
-  { id: "settings", name: "Settings and profile", icon: Settings, url: "/settings" },
+  { id: "settings", name: "Settings and profile", icon: Settings, url: "/dashboard/settings" },
 ]
 
 export function DashboardLayout() {
