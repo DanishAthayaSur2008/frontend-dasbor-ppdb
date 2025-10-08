@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedCard } from "@/components/animated-card"
 import { Eye, EyeOff, User, Lock, Save, ArrowLeft } from "lucide-react"
+import LogoAdmin from "@/public/logo-admin.png"
 
 export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
@@ -280,8 +281,15 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-xl font-bold font-inter">M</span>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
+              style={{
+                backgroundImage: `url(${LogoAdmin.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
             </div>
             <div>
               <h3 className="text-lg font-semibold font-inter text-gray-900">Admin</h3>

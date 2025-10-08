@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
+import Image from "next/image"
+import LogoAdmin from "@/public/logo-admin.png" // ganti dengan logo admin kamu
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
@@ -27,7 +29,7 @@ export function DashboardLayout() {
 
   return (
     <>
-      {/* Toggle button (muncul di mobile) */}
+      {/* Tombol toggle sidebar (mobile) */}
       <div className="md:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -43,12 +45,18 @@ export function DashboardLayout() {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} 
         w-72 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl md:rounded-r-3xl`}
       >
-        {/* Admin Profile */}
+        {/* Profil Admin */}
         <div className="p-8 pb-6">
           <div className="flex items-center space-x-4 mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-xl font-bold font-inter">M</span>
-            </div>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
+              style={{
+                backgroundImage: `url(${LogoAdmin.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            ></div>
             <div>
               <h3 className="text-lg font-semibold font-inter text-white">Admin</h3>
               <p className="text-sm text-blue-200 font-poppins">admin@ppdb.com</p>
@@ -57,7 +65,7 @@ export function DashboardLayout() {
           <div className="w-full h-px bg-blue-600/30"></div>
         </div>
 
-        {/* Navigation Menu */}
+        {/* Menu Navigasi */}
         <div className="flex-1 px-6 space-y-5 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = pathname === item.url
@@ -79,7 +87,7 @@ export function DashboardLayout() {
           })}
         </div>
 
-        {/* Footer */}
+        {/* Footer Sidebar */}
         <div className="p-6 pt-8">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 flex items-center justify-center">
@@ -91,19 +99,17 @@ export function DashboardLayout() {
             </div>
           </div>
 
-          <div className="sidebar-item">
-            <AnimatedButton
-              variant="ghost"
-              className="w-full justify-center bg-white text-[#1E3A8A] hover:bg-gray-100 font-poppins rounded-2xl py-3 font-medium shadow-md"
-              onClick={handleLogout}
-            >
-              Logout
-            </AnimatedButton>
-          </div>
+          <AnimatedButton
+            variant="ghost"
+            className="w-full justify-center bg-white text-[#1E3A8A] hover:bg-gray-100 font-poppins rounded-2xl py-3 font-medium shadow-md"
+            onClick={handleLogout}
+          >
+            Logout
+          </AnimatedButton>
         </div>
       </div>
 
-      {/* Overlay (klik di luar sidebar untuk menutup, hanya di mobile) */}
+      {/* Overlay (klik luar sidebar untuk menutup di mobile) */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
