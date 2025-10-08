@@ -1,22 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { Home, Table, Settings, GraduationCap } from "lucide-react"
+import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
-import Image from "next/image"
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
   { id: "table-data", name: "Table data", icon: Table, url: "/table-data" },
   { id: "data-siswa", name: "Data Siswa", icon: GraduationCap, url: "/data-siswa" },
-  { id: "settings", name: "Settings and profile", icon: Settings, url: "/settings" },
+  { id: "settings", name: "Settings and profile", icon: Settings, url: "/dashboard/settings" },
 ]
 
 export function DashboardLayout() {
   const router = useRouter()
-  const pathname = usePathname() // 👈 ini penting
+  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
     localStorage.removeItem("admin_logged_in")
@@ -25,9 +26,23 @@ export function DashboardLayout() {
   }
 
   return (
-    
-  
-      <div className="w-70 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl">
+    <>
+      {/* Toggle button (muncul di mobile) */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="bg-[#1E3A8A] text-white p-2 rounded-md shadow-lg focus:outline-none"
+        >
+          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Sidebar */}
+      <div
+        className={`fixed md:static top-0 left-0 h-full md:h-auto z-40 transform transition-transform duration-300
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} 
+        w-72 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl md:rounded-r-3xl`}
+      >
         {/* Admin Profile */}
         <div className="p-8 pb-6">
           <div className="flex items-center space-x-4 mb-8">
@@ -43,22 +58,22 @@ export function DashboardLayout() {
         </div>
 
         {/* Navigation Menu */}
-        <div className="flex-1 px-6 space-y-5">
+        <div className="flex-1 px-6 space-y-5 overflow-y-auto">
           {menuItems.map((item) => {
-            const isActive = pathname === item.url // 👈 cek langsung dari URL
+            const isActive = pathname === item.url
             return (
-              <Link key={item.id} href={item.url} className="block">
+              <Link key={item.id} href={item.url} onClick={() => setSidebarOpen(false)}>
                 <AnimatedButton
                   variant="ghost"
-                  className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${isActive
+                  className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${
+                    isActive
                       ? "bg-white text-[#1E3A8A] rounded-full shadow-md"
                       : "text-white hover:bg-white/10 rounded-full"
-                    }`}
+                  }`}
                 >
                   <item.icon className="mr-4 h-5 w-5" />
                   {item.name}
                 </AnimatedButton>
-
               </Link>
             )
           })}
@@ -88,5 +103,13 @@ export function DashboardLayout() {
         </div>
       </div>
 
+      {/* Overlay (klik di luar sidebar untuk menutup, hanya di mobile) */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+        ></div>
+      )}
+    </>
   )
 }

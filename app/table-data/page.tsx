@@ -44,17 +44,14 @@ export default function TableDataPage() {
     );
   };
 
-  // Data sesuai filter
   const filteredStudents = students.filter((s) => {
     if (filter === 'unverified') return !s.verified;
     if (filter === 'verified') return s.verified;
     return true;
   });
 
-  // Reusable card style function
   const getCardStyle = (type: 'all' | 'unverified' | 'verified') => {
     const isActive = filter === type;
-
     const colors = {
       all: { border: '#25A215', icon: '#25A215' },
       unverified: { border: '#08979C', icon: '#08979C' },
@@ -76,7 +73,6 @@ export default function TableDataPage() {
     };
   };
 
-  // Circle decoration reusable
   const CircleDecoration = ({ active }: { active: boolean }) => (
     <div className="absolute top-0 right-0 w-[140px] h-[140px] translate-x-1/2 -translate-y-1/3">
       <div
@@ -93,206 +89,133 @@ export default function TableDataPage() {
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       {/* Sidebar */}
       <DashboardLayout />
 
-      {/* Content */}
-      <div className="flex-1 p-6">
-        <h1 className="text-xl font-semibold mb-6">Dashboard / Data PPDB</h1>
+      {/* Main Content */}
+      <div className="flex-1 p-4 sm:p-6 md:p-8">
+        <h1 className="text-lg sm:text-xl font-semibold mb-6 font-inter">
+          Dashboard / Data PPDB
+        </h1>
 
-        {/* Header Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-9 mb-8">
-          {/* Card Data Diterima */}
-          <button
-            onClick={() => setFilter('all')}
-            className={`relative w-[397px] h-[154px] rounded-[10px] text-left transition overflow-hidden ${
-              getCardStyle('all').ringColor
-            } ${filter === 'all' ? 'ring-2' : ''}`}
-            style={getCardStyle('all')}
-          >
-            <div className="absolute left-7 top-5 flex items-center gap-5">
-              <div
-                className={`w-11 h-11 rounded-[10px] flex items-center justify-center ${
-                  filter === 'all' ? 'bg-white/30' : 'bg-[#25A215]'
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 justify-items-center">
+          {[
+            { type: 'all', title: 'Data Diterima', icon: FileCheck2, count: students.length },
+            {
+              type: 'unverified',
+              title: 'Data Belum Terverif',
+              icon: FolderX,
+              count: students.filter((s) => !s.verified).length,
+            },
+            {
+              type: 'verified',
+              title: 'Data Terverif',
+              icon: BadgeCheck,
+              count: students.filter((s) => s.verified).length,
+            },
+          ].map(({ type, title, icon: Icon, count }) => (
+            <button
+              key={type}
+              onClick={() => setFilter(type as any)}
+              className={`relative w-full sm:w-[360px] md:w-[380px] h-[150px] rounded-[10px] text-left transition overflow-hidden ${
+                getCardStyle(type as any).ringColor
+              } ${filter === type ? 'ring-2' : ''}`}
+              style={getCardStyle(type as any)}
+            >
+              <div className="absolute left-6 top-5 flex items-center gap-4">
+                <div
+                  className={`w-11 h-11 rounded-[10px] flex items-center justify-center ${
+                    filter === type ? 'bg-white/30' : ''
+                  }`}
+                  style={{
+                    backgroundColor:
+                      filter === type ? undefined : getCardStyle(type as any).borderLeft.split(' ')[2],
+                  }}
+                >
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3
+                    className={`text-lg sm:text-xl font-semibold ${
+                      filter === type ? 'text-white' : 'text-[#132B6D]'
+                    }`}
+                  >
+                    {title}
+                  </h3>
+                  <p
+                    className={`text-base ${
+                      filter === type ? 'text-white' : 'text-black'
+                    }`}
+                  >
+                    {count} Data
+                  </p>
+                </div>
+              </div>
+              <CircleDecoration active={filter === type} />
+              <span
+                className={`absolute left-6 bottom-3 text-sm font-semibold ${
+                  filter === type ? 'text-white' : 'text-gray-800'
                 }`}
               >
-                <FileCheck2 className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3
-                  className={`text-xl font-semibold ${
-                    filter === 'all' ? 'text-white' : 'text-[#132B6D]'
-                  }`}
-                >
-                  Data Diterima
-                </h3>
-                <p
-                  className={`text-lg ${
-                    filter === 'all' ? 'text-white' : 'text-black'
-                  }`}
-                >
-                  {students.length} Data
-                </p>
-              </div>
-            </div>
-
-            <CircleDecoration active={filter === 'all'} />
-
-            <span
-              className={`absolute left-7 bottom-3 text-sm font-semibold ${
-                filter === 'all' ? 'text-white' : 'text-gray-800'
-              }`}
-            >
-              Selengkapnya →
-            </span>
-          </button>
-
-          {/* Card Belum Terverifikasi */}
-          <button
-            onClick={() => setFilter('unverified')}
-            className={`relative w-[397px] h-[154px] rounded-[10px] text-left transition overflow-hidden ${
-              getCardStyle('unverified').ringColor
-            } ${filter === 'unverified' ? 'ring-2' : ''}`}
-            style={getCardStyle('unverified')}
-          >
-            <div className="absolute left-7 top-5 flex items-center gap-5">
-              <div
-                className={`w-11 h-11 rounded-[10px] flex items-center justify-center ${
-                  filter === 'unverified' ? 'bg-white/30' : 'bg-[#08979C]'
-                }`}
-              >
-                <FolderX className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3
-                  className={`text-xl font-semibold ${
-                    filter === 'unverified' ? 'text-white' : 'text-[#132B6D]'
-                  }`}
-                >
-                  Data Belum Terverif
-                </h3>
-                <p
-                  className={`text-lg ${
-                    filter === 'unverified' ? 'text-white' : 'text-black'
-                  }`}
-                >
-                  {students.filter((s) => !s.verified).length} Data
-                </p>
-              </div>
-            </div>
-
-            <CircleDecoration active={filter === 'unverified'} />
-
-            <span
-              className={`absolute left-7 bottom-3 text-sm font-semibold ${
-                filter === 'unverified' ? 'text-white' : 'text-gray-800'
-              }`}
-            >
-              Selengkapnya →
-            </span>
-          </button>
-
-          {/* Card Terverifikasi */}
-          <button
-            onClick={() => setFilter('verified')}
-            className={`relative w-[397px] h-[154px] rounded-[10px] text-left transition overflow-hidden ${
-              getCardStyle('verified').ringColor
-            } ${filter === 'verified' ? 'ring-2' : ''}`}
-            style={getCardStyle('verified')}
-          >
-            <div className="absolute left-7 top-5 flex items-center gap-5">
-              <div
-                className={`w-11 h-11 rounded-[10px] flex items-center justify-center ${
-                  filter === 'verified' ? 'bg-white/30' : 'bg-[#D97400]'
-                }`}
-              >
-                <BadgeCheck className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3
-                  className={`text-xl font-semibold ${
-                    filter === 'verified' ? 'text-white' : 'text-[#132B6D]'
-                  }`}
-                >
-                  Data Terverif
-                </h3>
-                <p
-                  className={`text-lg ${
-                    filter === 'verified' ? 'text-white' : 'text-black'
-                  }`}
-                >
-                  {students.filter((s) => s.verified).length} Data
-                </p>
-              </div>
-            </div>
-
-            <CircleDecoration active={filter === 'verified'} />
-
-            <span
-              className={`absolute left-7 bottom-3 text-sm font-semibold ${
-                filter === 'verified' ? 'text-white' : 'text-gray-800'
-              }`}
-            >
-              Selengkapnya →
-            </span>
-          </button>
+                Selengkapnya →
+              </span>
+            </button>
+          ))}
         </div>
 
         {/* Table */}
         <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="min-w-full border-collapse">
+          <table className="min-w-full border-collapse text-sm sm:text-base">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left">NISN</th>
-                <th className="px-4 py-2 text-left">Nama</th>
-                <th className="px-4 py-2 text-left">Alamat</th>
-                <th className="px-4 py-2 text-left">NIK</th>
-                <th className="px-4 py-2 text-left">Kontak</th>
-                <th className="px-4 py-2 text-center">Action</th>
+                <th className="px-3 sm:px-4 py-2 text-left">NISN</th>
+                <th className="px-3 sm:px-4 py-2 text-left">Nama</th>
+                <th className="px-3 sm:px-4 py-2 text-left">Alamat</th>
+                <th className="px-3 sm:px-4 py-2 text-left">NIK</th>
+                <th className="px-3 sm:px-4 py-2 text-left">Kontak</th>
+                <th className="px-3 sm:px-4 py-2 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredStudents.map((s) => (
                 <tr
                   key={s.id}
-                  className="border-b last:border-0 hover:bg-gray-50"
+                  className="border-b last:border-0 hover:bg-gray-50 text-xs sm:text-sm"
                 >
-                  <td className="px-4 py-2 font-mono text-green-600">
+                  <td className="px-3 sm:px-4 py-2 font-mono text-green-600">
                     {s.nisn}
                   </td>
-                  <td className="px-4 py-2">{s.nama}</td>
-                  <td className="px-4 py-2 truncate max-w-xs">{s.alamat}</td>
-                  <td className="px-4 py-2">{s.nik}</td>
-                  <td className="px-4 py-2">{s.kontak}</td>
-                  <td className="px-4 py-2 flex items-center gap-3 justify-center">
+                  <td className="px-3 sm:px-4 py-2">{s.nama}</td>
+                  <td className="px-3 sm:px-4 py-2 truncate max-w-[120px] sm:max-w-xs">{s.alamat}</td>
+                  <td className="px-3 sm:px-4 py-2">{s.nik}</td>
+                  <td className="px-3 sm:px-4 py-2">{s.kontak}</td>
+                  <td className="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 justify-center flex-wrap">
                     {!s.verified ? (
                       <button
                         onClick={() => handleVerify(s.id)}
-                        className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition"
+                        className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-500 text-white text-xs sm:text-sm rounded-lg hover:bg-green-600 transition"
                       >
-                        <Check className="w-4 h-4" /> Verify
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4" /> Verify
                       </button>
                     ) : (
-                      <span className="px-3 py-1 bg-green-100 text-green-600 rounded-lg text-sm">
+                      <span className="px-2 sm:px-3 py-1 bg-green-100 text-green-600 rounded-lg text-xs sm:text-sm">
                         Verified
                       </span>
                     )}
-                    <button className="p-2 bg-yellow-100 rounded-lg hover:bg-yellow-200">
-                      <Pencil className="w-4 h-4 text-yellow-600" />
+                    <button className="p-1 sm:p-2 bg-yellow-100 rounded-lg hover:bg-yellow-200">
+                      <Pencil className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600" />
                     </button>
-                    <button className="p-2 bg-red-100 rounded-lg hover:bg-red-200">
-                      <Trash2 className="w-4 h-4 text-red-600" />
+                    <button className="p-1 sm:p-2 bg-red-100 rounded-lg hover:bg-red-200">
+                      <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
                     </button>
                   </td>
                 </tr>
               ))}
               {filteredStudents.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="p-4 text-center text-gray-500"
-                  >
+                  <td colSpan={6} className="p-4 text-center text-gray-500">
                     Tidak ada data
                   </td>
                 </tr>
