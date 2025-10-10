@@ -83,7 +83,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 flex-col md:flex-row">
+    <div className="flex min-h-screen bg-gray-50 flex-col sm:flex-row">
       {/* Sidebar */}
       <DashboardLayout />
 

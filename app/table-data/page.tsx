@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Pencil, Trash2, FileCheck2, FolderX, BadgeCheck } from 'lucide-react';
+import { Check, Pencil, Trash2, FileCheck2, FolderX, BadgeCheck, X } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard-layout';
 
 type Student = {
@@ -37,11 +37,22 @@ export default function TableDataPage() {
   ]);
 
   const [filter, setFilter] = useState<'all' | 'unverified' | 'verified'>('all');
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleVerify = (id: number) => {
+  const handleOpenModal = (student: Student) => {
+    setSelectedStudent(student);
+    setShowModal(true);
+  };
+
+  const handleVerify = () => {
+    if (!selectedStudent) return;
     setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, verified: true } : s))
+      prev.map((s) =>
+        s.id === selectedStudent.id ? { ...s, verified: true } : s
+      )
     );
+    setShowModal(false);
   };
 
   const filteredStudents = students.filter((s) => {
@@ -184,17 +195,17 @@ export default function TableDataPage() {
                   key={s.id}
                   className="border-b last:border-0 hover:bg-gray-50 text-xs sm:text-sm"
                 >
-                  <td className="px-3 sm:px-4 py-2 font-mono text-green-600">
-                    {s.nisn}
-                  </td>
+                  <td className="px-3 sm:px-4 py-2 font-mono text-green-600">{s.nisn}</td>
                   <td className="px-3 sm:px-4 py-2">{s.nama}</td>
-                  <td className="px-3 sm:px-4 py-2 truncate max-w-[120px] sm:max-w-xs">{s.alamat}</td>
+                  <td className="px-3 sm:px-4 py-2 truncate max-w-[120px] sm:max-w-xs">
+                    {s.alamat}
+                  </td>
                   <td className="px-3 sm:px-4 py-2">{s.nik}</td>
                   <td className="px-3 sm:px-4 py-2">{s.kontak}</td>
                   <td className="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 justify-center flex-wrap">
                     {!s.verified ? (
                       <button
-                        onClick={() => handleVerify(s.id)}
+                        onClick={() => handleOpenModal(s)}
                         className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-500 text-white text-xs sm:text-sm rounded-lg hover:bg-green-600 transition"
                       >
                         <Check className="w-3 h-3 sm:w-4 sm:h-4" /> Verify
@@ -223,6 +234,47 @@ export default function TableDataPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Modal Popup */}
+        {showModal && selectedStudent && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative">
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h2 className="text-lg font-semibold text-[#132B6D] mb-4">
+                Apakah data tersebut sudah cocok?
+              </h2>
+
+              <div className="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700 space-y-2">
+                <p><span className="font-semibold text-gray-900">NISN:</span> {selectedStudent.nisn}</p>
+                <p><span className="font-semibold text-gray-900">Nama:</span> {selectedStudent.nama}</p>
+                <p><span className="font-semibold text-gray-900">Alamat:</span> {selectedStudent.alamat}</p>
+                <p><span className="font-semibold text-gray-900">NIK:</span> {selectedStudent.nik}</p>
+                <p><span className="font-semibold text-gray-900">Kontak:</span> {selectedStudent.kontak}</p>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleVerify}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                >
+                  Agree
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
