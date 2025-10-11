@@ -1,31 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import Link from "next/link"
-import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react"
-import { AnimatedButton } from "@/components/animated-button"
-import { SMKLogo } from "@/components/smk-logo"
-import Image from "next/image"
-import LogoAdmin from "@/public/logo-admin.png"
+import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react";
+import { AnimatedButton } from "@/components/animated-button";
+import { SMKLogo } from "@/components/smk-logo";
+import Image from "next/image";
+import LogoAdmin from "@/public/logo-admin.png";
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
   { id: "table-data", name: "Table data", icon: Table, url: "/table-data" },
-  { id: "data-siswa", name: "Data Siswa", icon: GraduationCap, url: "/data-siswa" },
-  { id: "settings", name: "Settings and profile", icon: Settings, url: "/dashboard/settings" },
-]
+  {
+    id: "data-siswa",
+    name: "Data Siswa",
+    icon: GraduationCap,
+    url: "/data-siswa",
+  },
+  {
+    id: "settings",
+    name: "Settings and profile",
+    icon: Settings,
+    url: "/dashboard/settings",
+  },
+];
 
 export function DashboardLayout() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const router = useRouter();
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("admin_logged_in")
-    localStorage.removeItem("admin_username")
-    router.push("/")
-  }
+    localStorage.removeItem("admin_logged_in");
+    localStorage.removeItem("admin_username");
+    router.push("/");
+  };
 
   return (
     <>
@@ -35,7 +45,11 @@ export function DashboardLayout() {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="bg-[#1E3A8A] text-white p-2 rounded-md shadow-lg focus:outline-none"
         >
-          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {sidebarOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
         </button>
       </div>
 
@@ -58,19 +72,28 @@ export function DashboardLayout() {
               }}
             ></div>
             <div>
-              <h3 className="text-lg font-semibold font-inter text-white">Admin</h3>
-              <p className="text-sm text-blue-200 font-poppins">admin@ppdb.com</p>
+              <h3 className="text-lg font-semibold font-inter text-white">
+                Admin
+              </h3>
+              <p className="text-sm text-blue-200 font-poppins">
+                admin@ppdb.com
+              </p>
             </div>
           </div>
           <div className="w-full h-px bg-blue-600/30"></div>
         </div>
 
         {/* Menu Navigasi */}
-        <div className="flex-1 px-6 space-y-5 overflow-y-auto">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.url
+        <div className="flex-1 px-6 overflow-y-auto">
+          {menuItems.map((item, i) => {
+            const isActive = pathname === item.url;
             return (
-              <Link key={item.id} href={item.url} onClick={() => setSidebarOpen(false)}>
+              <Link
+                key={item.id}
+                href={item.url}
+                onClick={() => setSidebarOpen(false)}
+                className={i !== menuItems.length - 1 ? "block mb-4" : "block"} // 👈 spacing antar tombol
+              >
                 <AnimatedButton
                   variant="ghost"
                   className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${
@@ -83,7 +106,7 @@ export function DashboardLayout() {
                   {item.name}
                 </AnimatedButton>
               </Link>
-            )
+            );
           })}
         </div>
 
@@ -94,8 +117,12 @@ export function DashboardLayout() {
               <SMKLogo warna="#ffffffff" className="w-8 h-8" />
             </div>
             <div>
-              <h4 className="text-sm font-bold font-inter text-white">SMK TI BAZMA</h4>
-              <p className="text-xs text-blue-200 font-poppins">Islamic Boarding School</p>
+              <h4 className="text-sm font-bold font-inter text-white">
+                SMK TI BAZMA
+              </h4>
+              <p className="text-xs text-blue-200 font-poppins">
+                Islamic Boarding School
+              </p>
             </div>
           </div>
 
@@ -117,5 +144,5 @@ export function DashboardLayout() {
         ></div>
       )}
     </>
-  )
+  );
 }

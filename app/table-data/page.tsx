@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Pencil, Trash2, FileCheck2, FolderX, BadgeCheck, X } from 'lucide-react';
+import { Check, Trash2, FileCheck2, FolderX, BadgeCheck, X, Download, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard-layout';
+import jsPDF from 'jspdf';
 
 type Student = {
   id: number;
@@ -32,13 +33,15 @@ export default function TableDataPage() {
       alamat: 'Bogor, Jawa Barat',
       nik: '987654321',
       kontak: '+62821-9999-0000',
-      verified: true,
+      verified: false,
     },
   ]);
 
   const [filter, setFilter] = useState<'all' | 'unverified' | 'verified'>('all');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [downloadedIds, setDownloadedIds] = useState<number[]>([]);
 
   const handleOpenModal = (student: Student) => {
     setSelectedStudent(student);
@@ -47,12 +50,49 @@ export default function TableDataPage() {
 
   const handleVerify = () => {
     if (!selectedStudent) return;
+
+    // Cek apakah admin sudah download PDF sebelumnya
+    if (!downloadedIds.includes(selectedStudent.id)) {
+      setShowWarning(true);
+      return;
+    }
+
+    // Jika sudah download PDF, maka lanjut verifikasi
     setStudents((prev) =>
       prev.map((s) =>
         s.id === selectedStudent.id ? { ...s, verified: true } : s
       )
     );
     setShowModal(false);
+  };
+
+  const handleDownloadPDF = (student: Student) => {
+    const doc = new jsPDF();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Data Siswa', 20, 20);
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    const data = [
+      `NISN: ${student.nisn}`,
+      `Nama: ${student.nama}`,
+      `Alamat: ${student.alamat}`,
+      `NIK: ${student.nik}`,
+      `Kontak: ${student.kontak}`,
+      `Status: ${student.verified ? 'Verified' : 'Unverified'}`,
+    ];
+
+    let y = 40;
+    data.forEach((line) => {
+      doc.text(line, 20, y);
+      y += 10;
+    });
+
+    doc.save(`data_${student.nama.replace(/\s+/g, '_')}.pdf`);
+
+    // Catat bahwa PDF sudah didownload
+    setDownloadedIds((prev) => [...prev, student.id]);
   };
 
   const filteredStudents = students.filter((s) => {
@@ -186,8 +226,13 @@ export default function TableDataPage() {
                         Verified
                       </span>
                     )}
-                    <button className="p-1 sm:p-2 bg-yellow-100 rounded-lg hover:bg-yellow-200">
-                      <Pencil className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600" />
+                    {/* Download PDF Button */}
+                    <button
+                      onClick={() => handleDownloadPDF(s)}
+                      className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-100 text-yellow-700 text-xs sm:text-sm rounded-lg hover:bg-yellow-200 transition"
+                    >
+                      Download PDF
+                      <Download className="w-4 h-4" />
                     </button>
                     <button className="p-1 sm:p-2 bg-red-100 rounded-lg hover:bg-red-200">
                       <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
@@ -206,7 +251,7 @@ export default function TableDataPage() {
           </table>
         </div>
 
-        {/* Modal */}
+        {/* Modal konfirmasi data */}
         {showModal && selectedStudent && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative">
@@ -241,6 +286,39 @@ export default function TableDataPage() {
                   className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
                 >
                   Agree
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal warning download */}
+        {showWarning && selectedStudent && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative">
+              <button
+                onClick={() => setShowWarning(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex flex-col items-center text-center">
+                <AlertCircle className="w-10 h-10 text-yellow-500 mb-3" />
+                <h2 className="text-lg font-semibold text-[#132B6D] mb-2">
+                  Anda belum mendownload data!
+                </h2>
+                <p className="text-gray-600 text-sm mb-4">
+                  Silakan download dan baca terlebih dahulu file PDF data siswa sebelum melakukan verifikasi.
+                </p>
+                <button
+                  onClick={() => {
+                    handleDownloadPDF(selectedStudent);
+                    setShowWarning(false);
+                  }}
+                  className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
+                >
+                  <Download className="w-4 h-4" /> Download Sekarang
                 </button>
               </div>
             </div>

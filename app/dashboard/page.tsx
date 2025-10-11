@@ -36,7 +36,7 @@ export default function DashboardPage() {
     }
 
     const months = [
-      "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan",
+      "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
     ];
     const chart = months.map((m) => ({
       name: m,
