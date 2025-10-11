@@ -64,9 +64,9 @@ export default function TableDataPage() {
   const getCardStyle = (type: 'all' | 'unverified' | 'verified') => {
     const isActive = filter === type;
     const colors = {
-      all: { border: '#25A215', icon: '#25A215' },
-      unverified: { border: '#08979C', icon: '#08979C' },
-      verified: { border: '#D97400', icon: '#D97400' },
+      all: { border: '#25A215' },
+      unverified: { border: '#08979C' },
+      verified: { border: '#D97400' },
     }[type];
 
     return {
@@ -74,13 +74,6 @@ export default function TableDataPage() {
       color: isActive ? '#FFFFFF' : '#000000',
       borderLeft: `7px solid ${colors.border}`,
       boxShadow: '2px 2px 4px rgba(0,0,0,0.25)',
-      ringColor: isActive
-        ? type === 'all'
-          ? 'ring-green-400'
-          : type === 'unverified'
-          ? 'ring-cyan-500'
-          : 'ring-orange-400'
-        : '',
     };
   };
 
@@ -100,12 +93,10 @@ export default function TableDataPage() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="flex h-screen overflow-hidden">
       <DashboardLayout />
 
-      {/* Main Content */}
-      <div className="flex-1 p-4 sm:p-6 md:p-8">
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
         <h1 className="text-lg sm:text-xl font-semibold mb-6 font-inter">
           Dashboard / Data PPDB
         </h1>
@@ -114,35 +105,20 @@ export default function TableDataPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 justify-items-center">
           {[
             { type: 'all', title: 'Data Diterima', icon: FileCheck2, count: students.length },
-            {
-              type: 'unverified',
-              title: 'Data Belum Terverif',
-              icon: FolderX,
-              count: students.filter((s) => !s.verified).length,
-            },
-            {
-              type: 'verified',
-              title: 'Data Terverif',
-              icon: BadgeCheck,
-              count: students.filter((s) => s.verified).length,
-            },
+            { type: 'unverified', title: 'Data Belum Terverif', icon: FolderX, count: students.filter((s) => !s.verified).length },
+            { type: 'verified', title: 'Data Terverif', icon: BadgeCheck, count: students.filter((s) => s.verified).length },
           ].map(({ type, title, icon: Icon, count }) => (
             <button
               key={type}
               onClick={() => setFilter(type as any)}
-              className={`relative w-full sm:w-[360px] md:w-[380px] h-[150px] rounded-[10px] text-left transition overflow-hidden ${
-                getCardStyle(type as any).ringColor
-              } ${filter === type ? 'ring-2' : ''}`}
+              className="relative w-full sm:w-[360px] md:w-[380px] h-[150px] rounded-[10px] text-left transition overflow-hidden"
               style={getCardStyle(type as any)}
             >
               <div className="absolute left-6 top-5 flex items-center gap-4">
                 <div
-                  className={`w-11 h-11 rounded-[10px] flex items-center justify-center ${
-                    filter === type ? 'bg-white/30' : ''
-                  }`}
+                  className="w-11 h-11 rounded-[10px] flex items-center justify-center"
                   style={{
-                    backgroundColor:
-                      filter === type ? undefined : getCardStyle(type as any).borderLeft.split(' ')[2],
+                    backgroundColor: getCardStyle(type as any).borderLeft.split(' ')[2],
                   }}
                 >
                   <Icon className="w-6 h-6 text-white" />
@@ -191,15 +167,10 @@ export default function TableDataPage() {
             </thead>
             <tbody>
               {filteredStudents.map((s) => (
-                <tr
-                  key={s.id}
-                  className="border-b last:border-0 hover:bg-gray-50 text-xs sm:text-sm"
-                >
+                <tr key={s.id} className="border-b last:border-0 hover:bg-gray-50 text-xs sm:text-sm">
                   <td className="px-3 sm:px-4 py-2 font-mono text-green-600">{s.nisn}</td>
                   <td className="px-3 sm:px-4 py-2">{s.nama}</td>
-                  <td className="px-3 sm:px-4 py-2 truncate max-w-[120px] sm:max-w-xs">
-                    {s.alamat}
-                  </td>
+                  <td className="px-3 sm:px-4 py-2 truncate max-w-[120px] sm:max-w-xs">{s.alamat}</td>
                   <td className="px-3 sm:px-4 py-2">{s.nik}</td>
                   <td className="px-3 sm:px-4 py-2">{s.kontak}</td>
                   <td className="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 justify-center flex-wrap">
@@ -235,7 +206,7 @@ export default function TableDataPage() {
           </table>
         </div>
 
-        {/* Modal Popup */}
+        {/* Modal */}
         {showModal && selectedStudent && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative">

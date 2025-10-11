@@ -36,18 +36,7 @@ export default function DashboardPage() {
     }
 
     const months = [
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
+      "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan",
     ];
     const chart = months.map((m) => ({
       name: m,
@@ -74,28 +63,23 @@ export default function DashboardPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-poppins">
-            Memuat dashboard...
-          </p>
+          <p className="text-muted-foreground font-poppins">Memuat dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 flex-col sm:flex-row">
-      {/* Sidebar */}
+    <div className="flex h-screen overflow-hidden">
       <DashboardLayout />
 
-      {/* Main Content */}
-      <div className="flex-1 p-4 sm:p-6 md:p-8 bg-gray-50 overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
         <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6">
           Dashboard
         </h1>
 
         {/* HEADER BLUE SECTION */}
         <div className="relative h-[140px] sm:h-[157px] rounded-[10px] overflow-visible mb-[110px]">
-          {/* Background */}
           <Image
             src={bgBlue}
             alt="Background Header"
@@ -104,48 +88,37 @@ export default function DashboardPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-[10px]" />
 
-          {/* CARD SECTION */}
-          <div className="absolute  left-3 sm:left-6 -bottom-[60px] w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)]">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-    {[
-      {
-        title: `${summary.total} Pendaftar`,
-        subtitle: "Jumlah Pendaftar",
-      },
-      {
-        title: `${summary.unverified} Tidak Terverif`,
-        subtitle: "Jumlah Tidak Terverifikasi",
-      },
-      {
-        title: `${summary.verified} Terverifikasi`,
-        subtitle: "Jumlah Verifikasi",
-      },
-    ].map((card, i) => (
-      <div
-        key={i}
-        className="relative w-full h-[110px] sm:h-[130px] rounded-[20px] shadow-md flex flex-col justify-center px-5 sm:px-6 bg-white"
-        style={{
-          backgroundImage: `url(${folderBg.src})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <h3 className="text-[#132B6D] text-[18px] sm:text-[22px] font-semibold leading-tight truncate">
-          {card.title}
-        </h3>
-        <p className="text-[13px] sm:text-[15px] text-black/50 truncate">
-          {card.subtitle}
-        </p>
-      </div>
-    ))}
-  </div>
-</div>
-
+          <div className="absolute left-3 sm:left-6 -bottom-[60px] w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {[
+                { title: `${summary.total} Pendaftar`, subtitle: "Jumlah Pendaftar" },
+                { title: `${summary.unverified} Tidak Terverif`, subtitle: "Jumlah Tidak Terverifikasi" },
+                { title: `${summary.verified} Terverifikasi`, subtitle: "Jumlah Verifikasi" },
+              ].map((card, i) => (
+                <div
+                  key={i}
+                  className="relative w-full h-[110px] sm:h-[130px] rounded-[20px] shadow-md flex flex-col justify-center px-5 sm:px-6 bg-white"
+                  style={{
+                    backgroundImage: `url(${folderBg.src})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <h3 className="text-[#132B6D] text-[18px] sm:text-[22px] font-semibold leading-tight truncate">
+                    {card.title}
+                  </h3>
+                  <p className="text-[13px] sm:text-[15px] text-black/50 truncate">
+                    {card.subtitle}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* CHART + DATA TAHUN */}
-        <div className="grid grid-cols-1  lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart */}
           <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-6 shadow">
             <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
@@ -211,7 +184,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        {/* END CHART SECTION */}
       </div>
     </div>
   );

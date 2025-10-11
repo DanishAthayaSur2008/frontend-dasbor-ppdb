@@ -8,10 +8,8 @@ export default function DataSiswaPage() {
   const [siswaData, setSiswaData] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
+  const itemsPerPage = 18;
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editData, setEditData] = useState<any>(null);
 
@@ -41,21 +39,10 @@ export default function DataSiswaPage() {
 
     try {
       const formData = new FormData();
-      formData.append('id', editData.id);
-      formData.append('name', editData.name || '');
-      formData.append('alamat', editData.alamat || '');
-      formData.append('nik', editData.nik || '');
-      formData.append('telepon', editData.telepon || '');
-      formData.append('angkatan', editData.angkatan || '');
-      formData.append('keahlian', editData.keahlian || '');
-      formData.append('status', editData.status || '');
-      formData.append('email', editData.email || '');
-      formData.append('password', editData.password || '');
-      formData.append('hafalan', editData.hafalan || '');
-      formData.append('nisn', editData.nisn || '');
-
-      if (editData.foto instanceof File) formData.append('foto', editData.foto);
-      if (editData.cv instanceof File) formData.append('cv', editData.cv);
+      for (const key in editData) {
+        if (editData[key] instanceof File) formData.append(key, editData[key]);
+        else formData.append(key, editData[key] ?? '');
+      }
 
       const res = await fetch(`https://backend_best.smktibazma.com/api/siswa/update/${editData.id}`, {
         method: 'PUT',
@@ -82,21 +69,20 @@ export default function DataSiswaPage() {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handlePrev = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-  const handleNext = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const currentItems = filteredData.slice(indexOfLastItem - itemsPerPage, indexOfLastItem);
 
   return (
-    <div className="flex min-h-screen bg-gray-50 flex-col sm:flex-row">
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar tetap di kiri */}
       <DashboardLayout />
 
-      <div className="flex-1 p-4 sm:p-6">
+      {/* Konten utama bisa scroll */}
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
         <h1 className="text-xl sm:text-2xl font-semibold mb-6 text-center sm:text-left">
           Dashboard / Data Siswa
         </h1>
 
+        {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <h2 className="text-lg font-medium">Data Siswa</h2>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -116,6 +102,7 @@ export default function DataSiswaPage() {
           </div>
         </div>
 
+        {/* Tabel */}
         <div className="overflow-x-auto bg-white rounded-xl shadow-sm w-full">
           {loading ? (
             <p className="p-4 text-center">Memuat data...</p>
@@ -134,13 +121,8 @@ export default function DataSiswaPage() {
                 </thead>
                 <tbody>
                   {currentItems.map((siswa: any) => (
-                    <tr
-                      key={siswa.id}
-                      className="border-b hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-4 py-3 text-green-600 font-medium">
-                        {siswa.nisn}
-                      </td>
+                    <tr key={siswa.id} className="border-b hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 text-green-600 font-medium">{siswa.nisn}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{siswa.name}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{siswa.alamat}</td>
                       <td className="px-4 py-3">{siswa.nik}</td>
@@ -164,9 +146,10 @@ export default function DataSiswaPage() {
                 </tbody>
               </table>
 
+              {/* Pagination */}
               <div className="flex flex-col sm:flex-row justify-between items-center p-4 gap-3 text-sm sm:text-base">
                 <button
-                  onClick={handlePrev}
+                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 transition"
                 >
@@ -176,7 +159,7 @@ export default function DataSiswaPage() {
                   Halaman {currentPage} dari {totalPages}
                 </span>
                 <button
-                  onClick={handleNext}
+                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 transition"
                 >

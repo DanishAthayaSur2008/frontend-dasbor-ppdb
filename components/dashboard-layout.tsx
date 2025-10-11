@@ -7,7 +7,7 @@ import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
 import { SMKLogo } from "@/components/smk-logo"
 import Image from "next/image"
-import LogoAdmin from "@/public/logo-admin.png" // ganti dengan logo admin kamu
+import LogoAdmin from "@/public/logo-admin.png"
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
@@ -41,7 +41,7 @@ export function DashboardLayout() {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:static top-0 left-0 h-full md:h-auto z-40 transform transition-transform duration-300
+        className={`fixed md:static top-0 left-0 h-full z-40 transform transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} 
         w-72 bg-[#1E3A8A] text-white flex flex-col rounded-r-3xl md:rounded-r-3xl`}
       >
