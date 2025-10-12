@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Trash2, FileCheck2, FolderX, BadgeCheck, X, Download, AlertCircle } from 'lucide-react';
+import { Check, FileCheck2, FolderX, BadgeCheck, X, Download, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard-layout';
 import jsPDF from 'jspdf';
 
@@ -219,11 +219,11 @@ export default function TableDataPage() {
                         onClick={() => handleOpenModal(s)}
                         className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-500 text-white text-xs sm:text-sm rounded-lg hover:bg-green-600 transition"
                       >
-                        <Check className="w-3 h-3 sm:w-4 sm:h-4" /> Verify
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4" /> Verifikasi
                       </button>
                     ) : (
                       <span className="px-2 sm:px-3 py-1 bg-green-100 text-green-600 rounded-lg text-xs sm:text-sm">
-                        Verified
+                        Terverifikasi
                       </span>
                     )}
                     {/* Download PDF Button */}
@@ -233,9 +233,6 @@ export default function TableDataPage() {
                     >
                       Download PDF
                       <Download className="w-4 h-4" />
-                    </button>
-                    <button className="p-1 sm:p-2 bg-red-100 rounded-lg hover:bg-red-200">
-                      <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
                     </button>
                   </td>
                 </tr>
@@ -279,13 +276,13 @@ export default function TableDataPage() {
                   onClick={() => setShowModal(false)}
                   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                 >
-                  Cancel
+                  Batal
                 </button>
                 <button
                   onClick={handleVerify}
                   className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
                 >
-                  Agree
+                  Setujui
                 </button>
               </div>
             </div>

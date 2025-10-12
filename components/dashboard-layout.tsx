@@ -22,7 +22,7 @@ const menuItems = [
     id: "settings",
     name: "Settings and profile",
     icon: Settings,
-    url: "/dashboard/settings",
+    url: "",
   },
 ];
 
