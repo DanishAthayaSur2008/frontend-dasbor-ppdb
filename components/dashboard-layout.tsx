@@ -18,12 +18,6 @@ const menuItems = [
     icon: GraduationCap,
     url: "/data-siswa",
   },
-  {
-    id: "settings",
-    name: "Settings and profile",
-    icon: Settings,
-    url: "",
-  },
 ];
 
 export function DashboardLayout() {
