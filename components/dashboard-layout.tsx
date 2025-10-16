@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Table, Settings, GraduationCap, Menu, X } from "lucide-react";
+import { Home, Table, Megaphone, GraduationCap, Menu, X } from "lucide-react";
 import { AnimatedButton } from "@/components/animated-button";
 import { SMKLogo } from "@/components/smk-logo";
 import Image from "next/image";
@@ -13,11 +13,18 @@ const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
   { id: "table-data", name: "Table data", icon: Table, url: "/table-data" },
   {
+    id: "data-akhir",
+    name: "Data Akhir",
+    icon: Megaphone,
+    url: "/data-akhir",
+  },
+  {
     id: "data-siswa",
     name: "Data Siswa",
     icon: GraduationCap,
     url: "/data-siswa",
   },
+
 ];
 
 export function DashboardLayout() {
