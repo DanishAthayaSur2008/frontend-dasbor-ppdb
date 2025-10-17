@@ -32,49 +32,68 @@ export function LoginForm() {
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+  e.preventDefault()
+  setIsLoading(true)
+  setError("")
 
-    // Animate button loading state
-    gsap.to(".login-button", { scale: 0.95, duration: 0.1 })
+  gsap.to(".login-button", { scale: 0.95, duration: 0.1 })
 
-    // Mock authentication - replace with real auth
-    setTimeout(() => {
-      if (username === "admin" && password === "admin123") {
-        localStorage.setItem("admin_logged_in", "true")
-        localStorage.setItem("admin_username", username)
-
-        // Success animation
-        gsap.to(formRef.current, {
-          scale: 1.05,
-          duration: 0.2,
-          yoyo: true,
-          repeat: 1,
-          onComplete: () => {
-            router.push("/dashboard")
-          },
-        })
-      } else {
-        setError("Username atau password salah")
-
-        // Error animation
-        if (errorRef.current) {
-          gsap.fromTo(errorRef.current, { x: -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3 })
-        }
-
-        // Shake animation for form
-        gsap.to(formRef.current, {
-          keyframes: { x: [-10, 10, -10, 10, 0] },
-          duration: 0.5,
-          ease: "power2.out",
-        })
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: username, // input “Username” sekarang dianggap sebagai email admin
+          password: password,
+        }),
       }
+    )
 
-      gsap.to(".login-button", { scale: 1, duration: 0.1 })
-      setIsLoading(false)
-    }, 1000)
+    const data = await res.json()
+    console.log("Login response:", data)
+
+    if (res.ok && data.accessToken) {
+      // Simpan token ke localStorage
+      localStorage.setItem("accessToken", data.accessToken)
+      localStorage.setItem("admin_email", username)
+
+      // Animasi sukses
+      gsap.to(formRef.current, {
+        scale: 1.05,
+        duration: 0.2,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => {
+          router.push("/dashboard")
+        },
+      })
+    } else {
+      throw new Error(data.message || "Login gagal")
+    }
+  } catch (err: any) {
+    setError(err.message || "Terjadi kesalahan koneksi ke server")
+
+    if (errorRef.current) {
+      gsap.fromTo(
+        errorRef.current,
+        { x: -10, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      )
+    }
+
+    gsap.to(formRef.current, {
+      keyframes: { x: [-10, 10, -10, 10, 0] },
+      duration: 0.5,
+      ease: "power2.out",
+    })
+  } finally {
+    gsap.to(".login-button", { scale: 1, duration: 0.1 })
+    setIsLoading(false)
   }
+}
+
 
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -96,14 +115,13 @@ export function LoginForm() {
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="pl-10 h-11 border-border focus:border-primary font-poppins"
-                placeholder="Masukkan username"
-                required
-              />
+  id="username"
+  type="email"
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+  placeholder="Masukkan email admin (contoh: admin1@mail.com)"
+/>
+
             </div>
           </div>
 
