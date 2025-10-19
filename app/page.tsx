@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { gsap } from "gsap"
 import { LoginForm } from "@/components/login-form"
-import { PPDBLogo } from "@/components/ppdb-logo"
 
 export default function LoginPage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -13,7 +12,7 @@ export default function LoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already logged in
+    // Cek apakah user sudah login
     const isLoggedIn = localStorage.getItem("admin_logged_in")
     if (isLoggedIn === "true") {
       router.push("/dashboard")
@@ -33,30 +32,18 @@ export default function LoginPage() {
   }, [router])
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4"
-    >
-      <div className="w-full max-w-md">
-        {/* Logo and Title */}
-        <div ref={titleRef} className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <PPDBLogo size="lg" animated={true} />
-          </div>
-          <h1 className="text-3xl font-bold text-primary font-serif mb-2 text-balance">Admin Dashboard</h1>
-          <p className="text-lg text-muted-foreground font-poppins">PPDB SMK TI Bazma 2026</p>
-          <div className="w-16 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mt-4 rounded-full"></div>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#1E2B61] to-[#142B6D] p-6">
 
-        {/* Login Form */}
-        <div ref={formRef}>
-          <LoginForm />
-        </div>
+      {/* Login Form */}
+      <div ref={formRef} className="w-full max-w-5xl">
+        <LoginForm />
+      </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-muted-foreground font-poppins">© 2026 SMK TI Bazma. Semua hak dilindungi.</p>
-        </div>
+      {/* Footer */}
+      <div className="text-center mt-10">
+        <p className="text-xs text-white/70 font-poppins">
+          © 2026 SMK TI Bazma. Semua hak dilindungi.
+        </p>
       </div>
     </div>
   )

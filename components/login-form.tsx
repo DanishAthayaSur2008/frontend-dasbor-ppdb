@@ -1,14 +1,13 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { gsap } from "gsap"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Eye, EyeOff, Lock, User } from "lucide-react"
 
 export function LoginForm() {
@@ -23,7 +22,6 @@ export function LoginForm() {
   const router = useRouter()
 
   useEffect(() => {
-    // Animate form inputs on mount
     gsap.fromTo(
       ".form-input",
       { x: -20, opacity: 0 },
@@ -35,35 +33,24 @@ export function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
     setError("")
-
-    // Animate button loading state
     gsap.to(".login-button", { scale: 0.95, duration: 0.1 })
 
-    // Mock authentication - replace with real auth
     setTimeout(() => {
       if (username === "admin" && password === "admin123") {
         localStorage.setItem("admin_logged_in", "true")
         localStorage.setItem("admin_username", username)
-
-        // Success animation
         gsap.to(formRef.current, {
           scale: 1.05,
           duration: 0.2,
           yoyo: true,
           repeat: 1,
-          onComplete: () => {
-            router.push("/dashboard")
-          },
+          onComplete: () => router.push("/dashboard"),
         })
       } else {
         setError("Username atau password salah")
-
-        // Error animation
         if (errorRef.current) {
           gsap.fromTo(errorRef.current, { x: -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3 })
         }
-
-        // Shake animation for form
         gsap.to(formRef.current, {
           keyframes: { x: [-10, 10, -10, 10, 0] },
           duration: 0.5,
@@ -77,77 +64,91 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-      <CardHeader className="text-center pb-4">
-        <CardTitle className="text-xl font-semibold text-primary font-inter">Masuk ke Dashboard</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div ref={errorRef} className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
-              {error}
-            </div>
-          )}
-
-          <div className="form-input space-y-2">
-            <Label htmlFor="username" className="text-sm font-medium text-foreground font-poppins">
-              Username
-            </Label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="pl-10 h-11 border-border focus:border-primary font-poppins"
-                placeholder="Masukkan username"
-                required
-              />
-            </div>
+      <Card className="w-[1620px] max-w-5xl bg-white shadow-xl rounded-[40px] overflow-hidden flex flex-col md:flex-row">
+        {/* KIRI: FORM LOGIN */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-10 py-12 space-y-6">
+          <div className="text-center mb-4">
+            <img
+              src="/logo-bazma.png"
+              alt="SMK TI Bazma"
+              className="w-24 h-24 md:w-900 md:h-28 mb-4 object-contain"
+            />
+            <h2 className="text-3xl font-bold text-gray-900 font-inter">
+              Selamat Datang Admin
+            </h2>
           </div>
 
-          <div className="form-input space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-foreground font-poppins">
-              Password
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 h-11 border-border focus:border-primary font-poppins"
-                placeholder="Masukkan password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div
+                ref={errorRef}
+                className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+                {error}
+              </div>
+            )}
+
+            <div className="form-input space-y-2">
+              <Label htmlFor="username" className="text-gray-700 font-medium">
+                Nama Anda
+              </Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="pl-10 h-11 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#1E2B61] outline-none"
+                  placeholder="Nama Anda"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="login-button w-full h-11 bg-primary hover:bg-primary/90 text-white font-medium font-poppins transition-all duration-200"
-          >
-            {isLoading ? "Memproses..." : "Masuk"}
-          </Button>
-        </form>
+            <div className="form-input space-y-2">
+              <Label htmlFor="password" className="text-gray-700 font-medium">
+                Kata Sandi
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-10 h-11 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#1E2B61] outline-none"
+                  placeholder="Kata Sandi"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
 
-        <div className="mt-6 text-center">
-          <p className="text-xs text-muted-foreground font-poppins">
-            Demo: username: <span className="font-medium">admin</span>, password:{" "}
-            <span className="font-medium">admin123</span>
-          </p>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="login-button w-full h-11 bg-[#1E2B61] hover:bg-[#16215a] text-white font-semibold rounded-xl transition-all duration-200"
+            >
+              {isLoading ? "Memproses..." : "Masuk"}
+            </Button>
+          </form>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* KANAN: GAMBAR */}
+        <div className="overflow-hidden md:flex md:w-1/2 items-center justify-center">
+          <img
+            src="/gambar-admin.png"
+            alt="Ilustrasi Login"
+            className="max-w-xs md:max-w-md w-full h-auto object-contain"
+          />
+        </div>
+      </Card>
   )
 }
