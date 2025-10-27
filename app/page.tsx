@@ -1,50 +1,63 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
-import { gsap } from "gsap"
-import { LoginForm } from "@/components/login-form"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { LoginForm } from "@/components/login-form";
+import { LoadingScreen } from "@/components/loading-screen";
 
 export default function LoginPage() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLDivElement>(null)
-  const formRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
+  const router = useRouter();
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    // Cek apakah user sudah login
-    const isLoggedIn = localStorage.getItem("admin_logged_in")
+    // ✅ Cek apakah user sudah login
+    const isLoggedIn = localStorage.getItem("admin_logged_in");
     if (isLoggedIn === "true") {
-      router.push("/dashboard")
-      return
+      router.push("/dashboard");
     }
-
-    const tl = gsap.timeline()
-
-    tl.fromTo(containerRef.current, { opacity: 0 }, { opacity: 1, duration: 1, ease: "power2.out" })
-      .fromTo(
-        titleRef.current,
-        { y: -50, opacity: 0, scale: 0.9 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" },
-        "-=0.6",
-      )
-      .fromTo(formRef.current, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, "-=0.4")
-  }, [router])
+  }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#1E2B61] to-[#142B6D] p-6">
+    <>
+      {/* 🔹 LOADING SCREEN */}
+      <AnimatePresence>
+        {!showLogin && <LoadingScreen onComplete={() => setShowLogin(true)} />}
+      </AnimatePresence>
 
-      {/* Login Form */}
-      <div ref={formRef} className="w-full max-w-5xl">
-        <LoginForm />
-      </div>
+      {/* 🔹 LOGIN PAGE */}
+      <AnimatePresence>
+        {showLogin && (
+          <motion.div
+            key="login-form-page"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#1E2B61] to-[#142B6D] p-6"
+          >
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+              className="w-full max-w-5xl"
+            >
+              <LoginForm />
+            </motion.div>
 
-      {/* Footer */}
-      <div className="text-center mt-10">
-        <p className="text-xs text-white/70 font-poppins">
-          © 2026 SMK TI Bazma. Semua hak dilindungi.
-        </p>
-      </div>
-    </div>
-  )
+            <motion.div
+              className="text-center mt-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
+            >
+              <p className="text-xs text-white/70 font-poppins">
+                © 2026 SMK TI Bazma. Semua hak dilindungi.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }

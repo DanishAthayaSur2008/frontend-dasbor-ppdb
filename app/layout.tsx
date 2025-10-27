@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "Admin Dashboard - PPDB SMK TI Bazma 2026",
   description: "Dashboard Admin untuk Penerimaan Peserta Didik Baru SMK TI Bazma 2026",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon-removebg-preview.png",
+  },
 }
 
 export default function RootLayout({

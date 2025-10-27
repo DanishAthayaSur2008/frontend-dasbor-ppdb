@@ -267,3 +267,15 @@
 .table-ppdb tr:hover {
   @apply bg-muted/30 transition-colors duration-150;
 }
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 1.4s linear infinite;
+}

@@ -35,14 +35,22 @@ export default function DashboardPage() {
       return;
     }
 
-    const months = [
-      "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-    ];
-    const chart = months.map((m) => ({
-      name: m,
+    // Ganti data chart berdasarkan provinsi (asal pendaftar)
+    const provinsi = [
+      "Sumatera",
+      "Jawa",
+      "Kalimatan",
+      "Sulawesi",
+      "Papua",
+      "Timor",
+    ]
+
+    const chart = provinsi.map((p) => ({
+      name: p,
       jumlah: Math.floor(Math.random() * 100) + 10,
-    }));
-    setChartData(chart);
+    }))
+    setChartData(chart)
+
 
     const years = [2025, 2024, 2023, 2022, 2021];
     const perTahun = years.map((y) => ({
@@ -123,17 +131,16 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-6 shadow">
             <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
               <h3 className="font-bold text-gray-800 text-base sm:text-lg">
-                Jumlah Pendaftar
+                Jumlah Pendaftar Asal Pulau
               </h3>
               <div className="flex flex-wrap gap-2">
                 {["12 Months", "6 Months", "30 Days", "7 Days"].map((label, i) => (
                   <button
                     key={i}
-                    className={`px-3 py-1 rounded-lg text-sm ${
-                      i === 0
+                    className={`px-3 py-1 rounded-lg text-sm ${i === 0
                         ? "bg-blue-600 text-white"
                         : "bg-gray-100 hover:bg-gray-200 transition"
-                    }`}
+                      }`}
                   >
                     {label}
                   </button>

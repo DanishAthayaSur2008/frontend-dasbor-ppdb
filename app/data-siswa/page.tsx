@@ -229,28 +229,34 @@ export default function DataSiswaPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((siswa: any) => (
-                    <tr key={siswa.id} className="border-b hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 text-green-600 font-medium">{siswa.nisn}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{siswa.name}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{siswa.angkatan}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{siswa.alamat}</td>
-                      <td className="px-4 py-3">{siswa.nik}</td>
-                      <td className="px-4 py-3">{siswa.telepon}</td>
-                      <td className="px-4 py-3 flex gap-2 justify-start sm:justify-center">
-                        <button className="text-green-600 hover:text-green-800" onClick={() => handleEdit(siswa)}>
-                          <Edit className="w-5 h-5" />
-                        </button>
-                        <button onClick={() => handleDelete(siswa.id)} className="text-red-600 hover:text-red-800">
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                        <button className="text-gray-600 hover:text-gray-800">
-                          <MoreVertical className="w-5 h-5" />
-                        </button>
+                  {currentItems.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-6 text-center text-gray-500">
+                        Belum ada data siswa
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    currentItems.map((siswa: any) => (
+                      <tr key={siswa.id} className="border-b hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-3 text-green-600 font-medium">{siswa.nisn}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{siswa.name}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{siswa.angkatan}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{siswa.alamat}</td>
+                        <td className="px-4 py-3">{siswa.nik}</td>
+                        <td className="px-4 py-3">{siswa.telepon}</td>
+                        <td className="px-4 py-3 flex gap-2 justify-start sm:justify-center">
+                          <button className="text-green-600 hover:text-green-800" onClick={() => handleEdit(siswa)}>
+                            <Edit className="w-5 h-5" />
+                          </button>
+                          <button onClick={() => handleDelete(siswa.id)} className="text-red-600 hover:text-red-800">
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
 
               {/* Pagination */}

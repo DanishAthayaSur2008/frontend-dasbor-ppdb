@@ -60,7 +60,7 @@ export function DashboardLayout() {
       duration: 0.4,
       ease: "power2.inOut",
       onComplete: () => {
-        router.push("/app"); // arahkan ke halaman login utama
+        router.push("/"); // arahkan ke halaman login utama
       },
     });
   };
@@ -116,11 +116,10 @@ export function DashboardLayout() {
               >
                 <AnimatedButton
                   variant="ghost"
-                  className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${
-                    isActive
-                      ? "bg-white text-[#1E3A8A] rounded-full shadow-md"
-                      : "text-white hover:bg-white/10 rounded-full"
-                  }`}
+                  className={`w-full justify-start text-left font-poppins py-4 px-6 transition-all duration-300 ${isActive
+                    ? "bg-white text-[#1E3A8A] rounded-full shadow-md"
+                    : "text-white hover:bg-white/10 rounded-full"
+                    }`}
                 >
                   <item.icon className="mr-4 h-5 w-5" />
                   {item.name}
@@ -132,7 +131,7 @@ export function DashboardLayout() {
 
         {/* Footer Sidebar */}
         <div className="p-6 pt-8">
-          <div className="flex items-center space-x-3 mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-6">
             <div className="w-10 h-10 flex items-center justify-center">
               <SMKLogo warna="#ffffffff" className="w-8 h-8" />
             </div>
@@ -142,13 +141,12 @@ export function DashboardLayout() {
             </div>
           </div>
 
-          <AnimatedButton
-            variant="ghost"
-            className="w-full justify-center bg-white text-[#1E3A8A] hover:bg-gray-100 font-poppins rounded-2xl py-3 font-medium shadow-md"
+          <button
+            className="w-full justify-center bg-white text-[#1E3A8A] hover:bg-gray-400 font-poppins rounded-2xl py-3 font-medium shadow-md"
             onClick={openConfirm}
           >
             Logout
-          </AnimatedButton>
+          </button>
         </div>
       </div>
 
@@ -160,15 +158,15 @@ export function DashboardLayout() {
         ></div>
       )}
 
-      {/* Popup Konfirmasi Logout (versi slide-up keren) */}
+      {/* Popup Konfirmasi Logout (versi tengah layar) */}
       {showConfirm && (
-        <div className="fixed inset-0 flex items-end justify-center bg-black/40 backdrop-blur-sm z-[100]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-[100] px-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-t-3xl shadow-2xl w-full max-w-md p-8 text-center relative"
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-md h-[200px] p-8 text-center relative"
           >
             {/* Logo SMK */}
-            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-3 shadow-lg">
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-white rounded-full p-1 shadow-lg">
               <SMKLogo warna="#1E3A8A" className="w-10 h-10" />
             </div>
 

@@ -64,7 +64,7 @@ export function LoginForm() {
   }
 
   return (
-      <Card className="w-[1620px] max-w-5xl bg-white shadow-xl rounded-[40px] overflow-hidden flex flex-col md:flex-row">
+      <Card className="h-[600px] w-flex bg-white shadow-xl rounded-[40px] overflow-hidden flex flex-col md:flex-row">
         {/* KIRI: FORM LOGIN */}
         <div className="w-full md:w-1/2 flex flex-col justify-center px-10 py-12 space-y-6">
           <div className="text-center mb-4">
@@ -74,7 +74,7 @@ export function LoginForm() {
               className="w-24 h-24 md:w-900 md:h-28 mb-4 object-contain"
             />
             <h2 className="text-3xl font-bold text-gray-900 font-inter">
-              Selamat Datang Admin
+              Selamat Datang Admin!
             </h2>
           </div>
 
@@ -146,7 +146,7 @@ export function LoginForm() {
           <img
             src="/gambar-admin.png"
             alt="Ilustrasi Login"
-            className="max-w-xs md:max-w-md w-full h-auto object-contain"
+            className="w-full h-[550px] md:max-w-md object-contain"
           />
         </div>
       </Card>

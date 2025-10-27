@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 
 interface AnimatedButtonProps {
   children: React.ReactNode
-  onClick?: () => void
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
   size?: "default" | "sm" | "lg" | "icon"
   className?: string
@@ -30,33 +30,15 @@ export function AnimatedButton({
     const button = buttonRef.current
     if (!button || disabled) return
 
-    // Klik animasi
+    // animasi klik GSAP
     gsap.fromTo(
       button,
       { scale: 1 },
-      {
-        scale: 0.95,
-        duration: 0.1,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.out",
-      }
+      { scale: 0.93, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }
     )
 
-    // Jalankan fungsi onClick langsung
-    if (onClick) onClick()
-  }
-
-  const handleMouseEnter = () => {
-    const button = buttonRef.current
-    if (!button || disabled) return
-    gsap.to(button, { scale: 1.05, duration: 0.2, ease: "power2.out" })
-  }
-
-  const handleMouseLeave = () => {
-    const button = buttonRef.current
-    if (!button || disabled) return
-    gsap.to(button, { scale: 1, duration: 0.2, ease: "power2.out" })
+    console.log("✅ AnimatedButton clicked")
+    onClick?.(e) // pastikan event diteruskan
   }
 
   return (
@@ -68,8 +50,6 @@ export function AnimatedButton({
       disabled={disabled}
       type={type}
       onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {children}
     </Button>
