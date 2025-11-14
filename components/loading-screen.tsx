@@ -94,7 +94,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="text-gray-300 text-lg mb-8"
             >
-              Admin Dashboard - PPDB SMK TI Bazma 2026
+              Admin Dashboard - SPMB SMK TI Bazma 2026
             </motion.p>
 
             {/* 🔵 Progress Bar */}

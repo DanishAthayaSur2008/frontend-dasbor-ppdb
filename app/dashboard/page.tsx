@@ -35,22 +35,12 @@ export default function DashboardPage() {
       return;
     }
 
-    // Ganti data chart berdasarkan provinsi (asal pendaftar)
-    const provinsi = [
-      "Sumatera",
-      "Jawa",
-      "Kalimatan",
-      "Sulawesi",
-      "Papua",
-      "Timor",
-    ]
-
+    const provinsi = ["Sumatera", "Jawa", "Kalimatan", "Sulawesi", "Papua", "Timor"];
     const chart = provinsi.map((p) => ({
       name: p,
       jumlah: Math.floor(Math.random() * 100) + 10,
-    }))
-    setChartData(chart)
-
+    }));
+    setChartData(chart);
 
     const years = [2025, 2024, 2023, 2022, 2021];
     const perTahun = years.map((y) => ({
@@ -81,10 +71,15 @@ export default function DashboardPage() {
     <div className="flex h-screen overflow-hidden">
       <DashboardLayout />
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
-        <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6">
-          Dashboard
-        </h1>
+      {/* BAGIAN KONTEN */}
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-4 transition-all duration-300">
+
+        {/* 🔹 FIXED HEADER TITLE */}
+        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">
+            Dashboard
+          </h1>
+        </div>
 
         {/* HEADER BLUE SECTION */}
         <div className="relative h-[140px] sm:h-[157px] rounded-[10px] overflow-visible mb-[110px]">

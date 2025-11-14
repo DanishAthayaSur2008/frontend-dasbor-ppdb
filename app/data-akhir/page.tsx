@@ -95,10 +95,13 @@ export default function DataAkhirPage() {
     <div className="flex h-screen overflow-hidden">
       <DashboardLayout />
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
-        <h1 className="text-xl sm:text-2xl font-semibold mb-6 text-center sm:text-left">
-          Dashboard / Data Akhir
-        </h1>
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-4 transition-all duration-300">
+        {/* 🔹 FIXED HEADER TITLE */}
+        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">
+            Dashboard / Data Akhir
+          </h1>
+        </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 justify-items-center">

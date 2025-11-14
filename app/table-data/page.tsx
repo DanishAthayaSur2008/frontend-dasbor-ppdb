@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Clock4,
   Send,
+  Eye,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import jsPDF from "jspdf";
@@ -120,6 +121,13 @@ export default function TableDataPage() {
     }
   }, [dataAkhir]);
 
+  useEffect(() => {
+    if (allDiterima.length > 0) {
+      sessionStorage.setItem("ppdb_diterima", JSON.stringify(allDiterima));
+    }
+  }, [allDiterima]);
+
+
   // storage event listener: update dataAkhir when localStorage changed from other tab
   useEffect(() => {
     const handler = (e: StorageEvent) => {
@@ -173,17 +181,17 @@ export default function TableDataPage() {
   const filteredViewList =
     activeFilter === "diterima"
       ? diterimaList.filter(
-          (s) =>
-            s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        (s) =>
+          s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
+      )
       : activeFilter === "tertunda"
-      ? tertunda.filter(
+        ? tertunda.filter(
           (s) =>
             s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
             s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
         )
-      : disetujui.filter(
+        : disetujui.filter(
           (s) =>
             s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
             s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
@@ -318,14 +326,12 @@ export default function TableDataPage() {
   const CircleDecoration = ({ active }: { active: boolean }) => (
     <div className="absolute top-0 right-0 w-[140px] h-[140px] translate-x-1/2 -translate-y-1/3">
       <div
-        className={`absolute w-[111px] h-[111px] rounded-full ${
-          active ? "bg-white/20" : "bg-[#E3E2E2]"
-        }`}
+        className={`absolute w-[111px] h-[111px] rounded-full ${active ? "bg-white/20" : "bg-[#E3E2E2]"
+          }`}
       ></div>
       <div
-        className={`absolute left-[27px] top-[27px] w-[57px] h-[57px] rounded-full ${
-          active ? "bg-white/30" : "bg-[#EEEEEE]"
-        }`}
+        className={`absolute left-[27px] top-[27px] w-[57px] h-[57px] rounded-full ${active ? "bg-white/30" : "bg-[#EEEEEE]"
+          }`}
       ></div>
     </div>
   );
@@ -342,9 +348,12 @@ export default function TableDataPage() {
       <DashboardLayout />
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
-        <h1 className="text-xl sm:text-2xl font-semibold mb-6 text-center sm:text-left">
-          Dashboard / Table Data
-        </h1>
+        {/* 🔹 FIXED HEADER TITLE */}
+        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">
+            Dashboard / Table Data
+          </h1>
+        </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 justify-items-center">
@@ -434,8 +443,14 @@ export default function TableDataPage() {
                         </button>
 
                         <button onClick={() => { setSelectedStudent(s); handleDownloadPDF(s); }} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-100 text-yellow-700 text-xs sm:text-sm rounded-lg hover:bg-yellow-200 transition">
-                          <Download className="w-4 h-4" /> Download PDF
+                          <Download className="w-4 h-4" />
                         </button>
+
+                        <button
+                          onClick={() => window.location.href = `/table-data/${s.id}`} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-600 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-700 transition">
+                          <Eye className="w-4 h-4" />
+                        </button>
+
                       </>
                     )}
 
