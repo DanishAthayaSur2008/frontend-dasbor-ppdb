@@ -1,6 +1,6 @@
 // app/api/auth/login/route.ts
 import { NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
+import { SignJWT } from "jose"
 
 export async function POST(req: Request) {
   const { username, password } = await req.json()
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // VALIDASI
+  // VALIDASI LOGIN
   if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
     return NextResponse.json(
       { error: "Username atau password salah" },
@@ -25,12 +25,13 @@ export async function POST(req: Request) {
     )
   }
 
-  // BUAT TOKEN
-  const token = jwt.sign(
-    { username },
-    JWT_SECRET,
-    { expiresIn: "2h" }
-  )
+  // BUAT TOKEN (ESM, kompatibel dengan Next.js)
+  const secret = new TextEncoder().encode(JWT_SECRET)
+
+  const token = await new SignJWT({ username })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("2h")
+    .sign(secret)
 
   return NextResponse.json({ token })
 }
