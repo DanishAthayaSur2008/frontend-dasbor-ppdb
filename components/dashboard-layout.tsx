@@ -9,6 +9,8 @@ import { SMKLogo } from "@/components/smk-logo";
 import Image from "next/image";
 import { gsap } from "gsap";
 import LogoAdmin from "@/public/logo-admin.png";
+import { useEffect } from "react";
+
 
 const menuItems = [
   { id: "dashboard", name: "Dashboard", icon: Home, url: "/dashboard" },
@@ -17,12 +19,24 @@ const menuItems = [
   { id: "data-siswa", name: "Data Siswa", icon: GraduationCap, url: "/data-siswa" },
 ];
 
+
+
+
+
+
 export function DashboardLayout() {
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    const listener = () => setSidebarOpen((prev) => !prev);
+    document.addEventListener("toggle-sidebar", listener);
+    return () => document.removeEventListener("toggle-sidebar", listener);
+  }, []);
 
   const openConfirm = () => {
     setShowConfirm(true);
@@ -67,15 +81,7 @@ export function DashboardLayout() {
 
   return (
     <>
-      {/* Tombol toggle sidebar (mobile) */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="bg-[#1E3A8A] text-white p-2 rounded-md shadow-lg focus:outline-none"
-        >
-          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
+
 
       {/* Sidebar */}
       <div

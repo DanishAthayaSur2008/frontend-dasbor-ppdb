@@ -1,67 +1,69 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { gsap } from "gsap"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
-import { Eye, EyeOff, Lock, User } from "lucide-react"
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { gsap } from "gsap";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Eye, EyeOff, Lock, User } from "lucide-react";
 
 export function LoginForm() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const formRef = useRef<HTMLFormElement>(null)
-  const errorRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
+  const formRef = useRef<HTMLFormElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     gsap.fromTo(
       ".form-input",
       { x: -20, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" },
-    )
-  }, [])
+      { x: 0, opacity: 1, duration: 0.5, stagger: 0.1 }
+    );
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-    gsap.to(".login-button", { scale: 0.95, duration: 0.1 })
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-    setTimeout(() => {
-      if (username === "admin" && password === "admin123") {
-        localStorage.setItem("admin_logged_in", "true")
-        localStorage.setItem("admin_username", username)
-        gsap.to(formRef.current, {
-          scale: 1.05,
-          duration: 0.2,
-          yoyo: true,
-          repeat: 1,
-          onComplete: () => router.push("/dashboard"),
-        })
-      } else {
-        setError("Username atau password salah")
-        if (errorRef.current) {
-          gsap.fromTo(errorRef.current, { x: -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3 })
-        }
-        gsap.to(formRef.current, {
-          keyframes: { x: [-10, 10, -10, 10, 0] },
-          duration: 0.5,
-          ease: "power2.out",
-        })
-      }
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-      gsap.to(".login-button", { scale: 1, duration: 0.1 })
-      setIsLoading(false)
-    }, 1000)
-  }
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || "Login gagal");
+      gsap.to(formRef.current, {
+        keyframes: { x: [-10, 10, -10, 10, 0] },
+        duration: 0.4,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    localStorage.setItem("admin_token", data.token);
+
+    // animasi
+    gsap.to(formRef.current, {
+      scale: 1.03,
+      duration: 0.2,
+      yoyo: true,
+      repeat: 1,
+      onComplete: () => router.push("/dashboard"),
+    });
+
+    setIsLoading(false);
+  };
 
   return (
       <Card className="h-[600px] w-flex bg-white shadow-xl rounded-[40px] overflow-hidden flex flex-col md:flex-row">
@@ -142,7 +144,7 @@ export function LoginForm() {
         </div>
 
         {/* KANAN: GAMBAR */}
-        <div className="overflow-hidden md:flex md:w-1/2 items-center justify-center">
+        <div className="hidden md:flex md:w-1/2 items-center justify-center">
           <img
             src="/gambar-admin.png"
             alt="Ilustrasi Login"

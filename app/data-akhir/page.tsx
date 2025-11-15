@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BadgeCheck, XCircle, MoreVertical, Send, X } from "lucide-react";
+import { BadgeCheck, XCircle, MoreVertical, Send, X, Menu } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 
 /**
@@ -96,11 +96,19 @@ export default function DataAkhirPage() {
       <DashboardLayout />
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-4 transition-all duration-300">
-        {/* 🔹 FIXED HEADER TITLE */}
-        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">
-            Dashboard / Data Akhir
-          </h1>
+        
+        {/* Title */}
+        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4 flex items-center gap-3">
+
+          {/* Hamburger Button (mobile only) */}
+          <button
+            onClick={() => document.dispatchEvent(new CustomEvent("toggle-sidebar"))}
+            className="md:hidden bg-[#1E3A8A] text-white p-2 rounded-md shadow"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">Dashboard / Data Akhir</h1>
         </div>
 
         {/* Cards */}

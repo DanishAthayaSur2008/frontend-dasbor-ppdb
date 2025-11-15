@@ -12,18 +12,20 @@ import {
   Clock4,
   Send,
   Eye,
+  Menu,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import jsPDF from "jspdf";
+
 
 /**
  * Table Data (Data Diterima) - FINAL REVISI
  *
  * Perbaikan & fitur:
  * - UI persis seperti aslinya (cards, table, spacing, responsive)
- * - Semua alur ada di 1 page: Diterima | Tertunda | Disetujui
+ * - Semua alur ada di 1 page: Diterima | Tertolak | Disetujui
  * - Setujui: cek download -> minta konfirmasi "sudah membaca?" -> pindah ke Disetujui
- * - Tunda: input note -> Kirim Notifikasi -> pindah ke Tertunda (note disimpan)
+ * - Tolak: input note -> Kirim Notifikasi -> pindah ke Tertolak (note disimpan)
  * - Disetujui: tombol Loloskan / Tidak Loloskan -> SIMPAN KE localStorage "app_dataAkhir_v1" SEGERA
  * - Mencegah duplikat di localStorage
  * - Realtime sync: page lain yang buka akan mendengar perubahan localStorage (storage event)
@@ -42,7 +44,7 @@ type Student = {
   nik: string;
   kontak: string;
   verified?: boolean;
-  status?: "diterima" | "tertunda" | "disetujui";
+  status?: "diterima" | "tertolak" | "disetujui";
   note?: string;
 };
 
@@ -79,7 +81,7 @@ export default function TableDataPage() {
   ]);
 
   // lists
-  const [tertunda, setTertunda] = useState<Student[]>([]);
+  const [tertolak, setTertolak] = useState<Student[]>([]);
   const [disetujui, setDisetujui] = useState<Student[]>([]);
 
   // final decisions persisted in localStorage (app_dataAkhir_v1)
@@ -94,7 +96,7 @@ export default function TableDataPage() {
 
   // UI / modal / helpers states
   const [activeFilter, setActiveFilter] = useState<
-    "diterima" | "tertunda" | "disetujui"
+    "diterima" | "tertolak" | "disetujui"
   >("diterima");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -104,7 +106,7 @@ export default function TableDataPage() {
   const [showConfirmRead, setShowConfirmRead] = useState(false);
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteInput, setNoteInput] = useState("");
-  const [showTertundaConfirm, setShowTertundaConfirm] = useState(false);
+  const [showTertolakConfirm, setShowTertolakConfirm] = useState(false);
   const [showDecisionConfirm, setShowDecisionConfirm] = useState<
     null | { decision: "lolos" | "tidak" }
   >(null);
@@ -185,8 +187,8 @@ export default function TableDataPage() {
           s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
           s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      : activeFilter === "tertunda"
-        ? tertunda.filter(
+      : activeFilter === "tertolak"
+        ? tertolak.filter(
           (s) =>
             s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
             s.nisn.toLowerCase().includes(searchQuery.toLowerCase())
@@ -220,46 +222,46 @@ export default function TableDataPage() {
     setActiveFilter("disetujui");
   };
 
-  // ---------------- Tunda flow ----------------
-  const handleTundaClicked = (student: Student) => {
+  // ---------------- Tolak flow ----------------
+  const handleTolakClicked = (student: Student) => {
     setSelectedStudent(student);
     setNoteInput(student.note ?? "");
     setShowNoteModal(true);
   };
 
-  const sendTundaWithNote = () => {
+  const sendTolakWithNote = () => {
     if (!selectedStudent) return;
     const noteTrim = noteInput.trim();
     if (!noteTrim) return;
 
-    // move to tertunda
-    setTertunda((prev) => [...prev, { ...selectedStudent, status: "tertunda", note: noteTrim }]);
+    // move to tertolak
+    setTertolak((prev) => [...prev, { ...selectedStudent, status: "tertolak", note: noteTrim }]);
     setAllDiterima((prev) => prev.filter((s) => s.id !== selectedStudent.id));
 
     setShowNoteModal(false);
     // open a confirm modal to simulate "kirim notif"
-    setShowTertundaConfirm(true);
+    setShowTertolakConfirm(true);
     setSelectedStudent(null);
     setNoteInput("");
-    setActiveFilter("tertunda");
+    setActiveFilter("tertolak");
   };
 
-  const confirmSendNotifTunda = () => {
+  const confirmSendNotifTolak = () => {
     // TODO: API call to send notification
-    setShowTertundaConfirm(false);
+    setShowTertolakConfirm(false);
   };
 
-  // edit note on tertunda
-  const handleEditNoteTertunda = (student: Student) => {
+  // edit note on tertolak
+  const handleEditNoteTertolak = (student: Student) => {
     setSelectedStudent(student);
     setNoteInput(student.note ?? "");
     setShowNoteModal(true);
   };
 
-  const saveEditedNoteTertunda = () => {
+  const saveEditedNoteTertolak = () => {
     if (!selectedStudent) return;
     const noteTrim = noteInput.trim();
-    setTertunda((prev) => prev.map((s) => (s.id === selectedStudent.id ? { ...s, note: noteTrim } : s)));
+    setTertolak((prev) => prev.map((s) => (s.id === selectedStudent.id ? { ...s, note: noteTrim } : s)));
     setShowNoteModal(false);
     setSelectedStudent(null);
     setNoteInput("");
@@ -279,7 +281,7 @@ export default function TableDataPage() {
     // remove student from lists to avoid reappearing
     setDisetujui((prev) => prev.filter((s) => s.id !== selectedStudent.id));
     setAllDiterima((prev) => prev.filter((s) => s.id !== selectedStudent.id));
-    setTertunda((prev) => prev.filter((s) => s.id !== selectedStudent.id));
+    setTertolak((prev) => prev.filter((s) => s.id !== selectedStudent.id));
 
     const final: FinalDecision = {
       id: selectedStudent.id,
@@ -307,11 +309,11 @@ export default function TableDataPage() {
   };
 
   // helper getCardStyle (kept consistent with original)
-  const getCardStyle = (type: "diterima" | "tertunda" | "disetujui") => {
+  const getCardStyle = (type: "diterima" | "tertolak" | "disetujui") => {
     const isActive = activeFilter === type;
     const colors = {
       diterima: "#25A215",
-      tertunda: "#08979C",
+      tertolak: "#08979C",
       disetujui: "#D97400",
     } as Record<string, string>;
 
@@ -338,7 +340,7 @@ export default function TableDataPage() {
 
   const counts = {
     diterima: allDiterima.length,
-    tertunda: tertunda.length,
+    tertolak: tertolak.length,
     disetujui: disetujui.length,
   };
 
@@ -347,19 +349,27 @@ export default function TableDataPage() {
     <div className="flex h-screen overflow-hidden">
       <DashboardLayout />
 
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-[1rem] transition-all duration-300">
-        {/* 🔹 FIXED HEADER TITLE */}
-        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">
-            Dashboard / Table Data
-          </h1>
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 md:p-6 md:ml-4 transition-all duration-300">
+        
+        {/* Title */}
+        <div className="sticky top-0 z-20 bg-gray-50/80 backdrop-blur-md border-b border-gray-200 mb-4 flex items-center gap-3">
+
+          {/* Hamburger Button (mobile only) */}
+          <button
+            onClick={() => document.dispatchEvent(new CustomEvent("toggle-sidebar"))}
+            className="md:hidden bg-[#1E3A8A] text-white p-2 rounded-md shadow"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold py-3">Dashboard / Table Data</h1>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 justify-items-center">
           {[
             { type: "diterima", title: "Data Diterima", icon: FileCheck2, count: counts.diterima },
-            { type: "tertunda", title: "Data Tertunda", icon: FolderX, count: counts.tertunda },
+            { type: "tertolak", title: "Data Tertolak", icon: FolderX, count: counts.tertolak },
             { type: "disetujui", title: "Data Disetujui", icon: BadgeCheck, count: counts.disetujui },
           ].map(({ type, title, icon: Icon, count }) => (
             <button
@@ -393,9 +403,9 @@ export default function TableDataPage() {
         {/* Search / header */}
         <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center bg-white shadow-md rounded-[10px] p-5 mb-6 gap-4 font-[Poppins]">
           <div className="flex flex-col items-start w-full sm:w-auto">
-            <span className="text-[20px] font-[500] text-[#292929]">Data Siswa</span>
+            <span className="text-[20px] font-medium text-[#292929]">Data Siswa</span>
             <span className="text-sm text-gray-500 mt-1">
-              {activeFilter === "diterima" ? "Menampilkan data diterima" : activeFilter === "tertunda" ? "Menampilkan data tertunda" : "Menampilkan data disetujui"}
+              {activeFilter === "diterima" ? "Menampilkan data diterima" : activeFilter === "tertolak" ? "Menampilkan data tertolak" : "Menampilkan data disetujui"}
             </span>
           </div>
 
@@ -438,8 +448,8 @@ export default function TableDataPage() {
                           <Check className="w-3 h-3 sm:w-4 sm:h-4" /> Setujui
                         </button>
 
-                        <button onClick={() => handleTundaClicked(s)} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-500 text-white text-xs sm:text-sm rounded-lg hover:bg-yellow-600 transition">
-                          <Clock4 className="w-3 h-3 sm:w-4 sm:h-4" /> Tunda
+                        <button onClick={() => handleTolakClicked(s)} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-500 text-white text-xs sm:text-sm rounded-lg hover:bg-yellow-600 transition">
+                          <Clock4 className="w-3 h-3 sm:w-4 sm:h-4" /> Tolak
                         </button>
 
                         <button onClick={() => { setSelectedStudent(s); handleDownloadPDF(s); }} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-yellow-100 text-yellow-700 text-xs sm:text-sm rounded-lg hover:bg-yellow-200 transition">
@@ -454,16 +464,16 @@ export default function TableDataPage() {
                       </>
                     )}
 
-                    {activeFilter === "tertunda" && (
+                    {activeFilter === "tertolak" && (
                       <>
-                        <button onClick={() => handleEditNoteTertunda(s)} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-lg hover:bg-gray-200 transition">
+                        <button onClick={() => handleEditNoteTertolak(s)} className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-lg hover:bg-gray-200 transition">
                           Edit Note
                         </button>
 
                         <button
                           onClick={() => {
                             setSelectedStudent(s);
-                            setShowTertundaConfirm(true);
+                            setShowTertolakConfirm(true);
                           }}
                           className={`flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-500 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-600 transition ${!s.note ? "opacity-60 cursor-not-allowed" : ""}`}
                           disabled={!s.note}
@@ -540,7 +550,7 @@ export default function TableDataPage() {
           </div>
         )}
 
-        {/* Note Modal (Tunda / Edit note) */}
+        {/* Note Modal (Tolak / Edit note) */}
         {showNoteModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative">
@@ -548,20 +558,20 @@ export default function TableDataPage() {
                 <X className="w-5 h-5" />
               </button>
 
-              <h2 className="text-lg font-semibold text-[#132B6D] mb-4">Tunda Data Siswa</h2>
-              <p className="text-gray-600 text-sm mb-3">Tulis alasan atau catatan kenapa data ini ditunda:</p>
+              <h2 className="text-lg font-semibold text-[#132B6D] mb-4">Tolak Data Siswa</h2>
+              <p className="text-gray-600 text-sm mb-3">Tulis alasan atau catatan kenapa data ini ditolak:</p>
 
               <textarea value={noteInput} onChange={(e) => setNoteInput(e.target.value)} placeholder="Tuliskan catatan di sini..." className="w-full border border-gray-300 rounded-lg p-3 text-sm mb-4" rows={4} />
 
               <div className="flex justify-end gap-3">
                 <button onClick={() => { setShowNoteModal(false); setSelectedStudent(null); setNoteInput(""); }} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition">Batal</button>
 
-                {selectedStudent && tertunda.some((t) => t.id === selectedStudent.id) ? (
-                  <button onClick={saveEditedNoteTertunda} disabled={!noteInput.trim()} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${noteInput.trim() ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-600 cursor-not-allowed"}`}>
+                {selectedStudent && tertolak.some((t) => t.id === selectedStudent.id) ? (
+                  <button onClick={saveEditedNoteTertolak} disabled={!noteInput.trim()} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${noteInput.trim() ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-600 cursor-not-allowed"}`}>
                     Simpan Note
                   </button>
                 ) : (
-                  <button onClick={sendTundaWithNote} disabled={!noteInput.trim()} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${noteInput.trim() ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-600 cursor-not-allowed"}`}>
+                  <button onClick={sendTolakWithNote} disabled={!noteInput.trim()} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${noteInput.trim() ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-600 cursor-not-allowed"}`}>
                     <Send className="w-4 h-4" /> Kirim Notifikasi
                   </button>
                 )}
@@ -570,11 +580,11 @@ export default function TableDataPage() {
           </div>
         )}
 
-        {/* Tertunda send confirmation */}
-        {showTertundaConfirm && selectedStudent && (
+        {/* Tertolak send confirmation */}
+        {showTertolakConfirm && selectedStudent && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 relative text-center">
-              <button onClick={() => { setShowTertundaConfirm(false); setSelectedStudent(null); }} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+              <button onClick={() => { setShowTertolakConfirm(false); setSelectedStudent(null); }} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
               </button>
 
@@ -582,8 +592,8 @@ export default function TableDataPage() {
               <p className="text-gray-600 text-sm mb-6">Apakah Anda ingin mengirim notifikasi ke <span className="font-semibold text-gray-800">{selectedStudent?.nama}</span> mengenai alasan penundaan?</p>
 
               <div className="flex justify-center gap-3">
-                <button onClick={() => { setShowTertundaConfirm(false); setSelectedStudent(null); }} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition">Batal</button>
-                <button onClick={() => { confirmSendNotifTunda(); setShowTertundaConfirm(false); }} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Kirim</button>
+                <button onClick={() => { setShowTertolakConfirm(false); setSelectedStudent(null); }} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition">Batal</button>
+                <button onClick={() => { confirmSendNotifTolak(); setShowTertolakConfirm(false); }} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Kirim</button>
               </div>
             </div>
           </div>
